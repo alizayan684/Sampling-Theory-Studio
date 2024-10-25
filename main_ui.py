@@ -22,6 +22,8 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHBoxLayout
 
 from pyqtgraph import PlotWidget
 
+import classes as cl
+
 class Ui_Sampler(object):
     def setupUi(self, Sampler):
         if not Sampler.objectName():
@@ -214,7 +216,7 @@ class Ui_Sampler(object):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.originalSignalPlot = PlotWidget(self.centralwidget)
+        self.originalSignalPlot = cl.OriginalSignalGraph(self.centralwidget)  # make this an object of the originalSignalGraph class in the 'MainWindow.py'.
         self.originalSignalPlot.setObjectName(u"originalSignalPlot")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
