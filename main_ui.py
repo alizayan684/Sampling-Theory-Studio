@@ -234,7 +234,7 @@ class Ui_Sampler(object):
 
         self.horizontalLayout_3.addWidget(self.originalSignalPlot)
 
-        self.sampledSignalPlot = PlotWidget(self.centralwidget)
+        self.sampledSignalPlot = cl.ReconstructedSignalGraph(self.centralwidget)
         self.sampledSignalPlot.setObjectName(u"sampledSignalPlot")
         sizePolicy.setHeightForWidth(self.sampledSignalPlot.sizePolicy().hasHeightForWidth())
         self.sampledSignalPlot.setSizePolicy(sizePolicy)
@@ -269,7 +269,7 @@ class Ui_Sampler(object):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.differencePlot = PlotWidget(self.centralwidget)
+        self.differencePlot = cl.DifferenceGraph(self.centralwidget)
         self.differencePlot.setObjectName(u"differencePlot")
         sizePolicy.setHeightForWidth(self.differencePlot.sizePolicy().hasHeightForWidth())
         self.differencePlot.setSizePolicy(sizePolicy)
