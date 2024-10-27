@@ -28,8 +28,12 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.df = pd.read_csv(filePath, header=None)
             self.browsedSignal = []
             self.browsedSignal = self.df.to_numpy().flatten()
-            self.originalSignalPlot.ShowSampledSignal(self.browsedSignal, 5)
-        
+            self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
+            self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = 'whittaker shannon')
+            self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+            self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+            
+            
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);
     window = MainWindow();

@@ -284,7 +284,7 @@ class Ui_Sampler(object):
 
         self.horizontalLayout_4.addWidget(self.differencePlot)
 
-        self.frequencyDomainPlot = PlotWidget(self.centralwidget)
+        self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
         self.frequencyDomainPlot.setSizePolicy(sizePolicy)
