@@ -6,8 +6,8 @@ from scipy.interpolate import interp1d
 class OriginalSignalGraph(pg.PlotWidget):
     def __init__(self, parent = None):
         super().__init__(parent )
-        self.signalFreq = 2 # initializing frequency of the original signal (a default signal with freq = 5 Hz before browsing any signal) (cycles per second)
-        self.f_sampling = 3 * self.signalFreq # initializing sampling frequency to sample the signal (samples per second)
+        self.signalFreq = 5 # initializing frequency of the original signal (a default signal with freq = 5 Hz before browsing any signal) (cycles per second)
+        self.f_sampling = 4 * self.signalFreq # initializing sampling frequency to sample the signal (samples per second)
         self.duration = 1  # duration of the signal
         self.originalSignal_time =  np.linspace(0, self.duration,  1000) # initializing x values of the original signal(time domain)
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time)  # initialization of the graph's original signal values
@@ -16,17 +16,18 @@ class OriginalSignalGraph(pg.PlotWidget):
         
         
     # showing sampled signal in the graph    
-    def ShowSampledSignal(self, originalSignal, signalFreq, f_sampling, originalSignal_time = None):  # I pass the "originalSignal_time" as it will be needed for the default signal that occurs when starting the application
+    def ShowSampledSignal(self, originalSignal, signalFreq, f_sampling, originalSignal_time = None):  # I pass the "originalSignal_time" as it will be needed for the default signal that occurs when starting the application and also to keep  the same signal time when changing the slider
         self.clear()
-        self.originalSignal = originalSignal
+        self.originalSignal_values = originalSignal
         self.signalFreq = signalFreq
         self.f_sampling = f_sampling
         self.originalSignal_time = originalSignal_time
-        if self.originalSignal_time is None :
-            pass
+        # if self.originalSignal_time is None :
+        #     pass
         
+        self.setYRange(-1, 1)
         self.plot(self.originalSignal_time, self.originalSignal_values, pen = 'r')
-        self.samples_time = np.linspace(0, self.duration, int(self.duration * self.f_sampling))
+        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
         self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
         self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
 
@@ -73,6 +74,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the whittaker shannon formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.whittaker_shannon(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             # Plot the reconstructed signal
+            self.setYRange(-1, 1)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
             
             
