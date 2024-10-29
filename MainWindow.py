@@ -17,7 +17,19 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
         
         self.samplingFreqSlider.valueChanged.connect(self.setSamplingSliderValue)
-        self.browseSignalButton.clicked.connect(self.browseSignal)        
+        self.browseSignalButton.clicked.connect(self.browseSignal)
+
+        self.amplitudeComposerSlider.setMinimum(1)
+        self.amplitudeComposerSlider.setMaximum(20)
+        self.amplitudeComposerSlider.setValue(self.amplitudeComposerSlider.minimum())
+        self.amplitudeComposerLCD.display(self.amplitudeComposerSlider.value())
+        self.amplitudeComposerSlider.valueChanged.connect(self.setAmplitudeSliderValue)
+
+        self.freqComposerSlider.setMinimum(1)
+        self.freqComposerSlider.setMaximum(10)
+        self.freqComposerSlider.setValue(self.freqComposerSlider.minimum())
+        self.freqComposerLCD.display(self.freqComposerSlider.value())
+        self.freqComposerSlider.valueChanged.connect(self.setFrequencySliderValue)
         
     def browseSignal(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -41,6 +53,12 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+
+    def setAmplitudeSliderValue(self):
+        self.amplitudeComposerLCD.display(self.amplitudeComposerSlider.value())
+    
+    def setFrequencySliderValue(self):
+        self.freqComposerLCD.display(self.freqComposerSlider.value())
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);
