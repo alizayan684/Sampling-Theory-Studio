@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
     QVBoxLayout, QWidget)
 
 from pyqtgraph import PlotWidget
+import classes as cl
 
 class Ui_Sampler(QMainWindow):
     def setupUi(self, MainWindow):
@@ -521,7 +522,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.originalSignalPlot = PlotWidget(self.centralwidget)
+        self.originalSignalPlot = cl.OriginalSignalGraph(self.centralwidget)  # make this an object of the originalSignalGraph class in the 'MainWindow.py'.
         self.originalSignalPlot.setObjectName(u"originalSignalPlot")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy3.setHorizontalStretch(0)
@@ -548,7 +549,7 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_3.addWidget(self.label_9)
 
-        self.sampledSignalPlot = PlotWidget(self.centralwidget)
+        self.sampledSignalPlot = cl.ReconstructedSignalGraph(self.centralwidget)
         self.sampledSignalPlot.setObjectName(u"sampledSignalPlot")
         sizePolicy3.setHeightForWidth(self.sampledSignalPlot.sizePolicy().hasHeightForWidth())
         self.sampledSignalPlot.setSizePolicy(sizePolicy3)
@@ -573,7 +574,9 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_10)
 
-        self.differencePlot = PlotWidget(self.centralwidget)
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.differencePlot = cl.DifferenceGraph(self.centralwidget)
         self.differencePlot.setObjectName(u"differencePlot")
         sizePolicy3.setHeightForWidth(self.differencePlot.sizePolicy().hasHeightForWidth())
         self.differencePlot.setSizePolicy(sizePolicy3)
@@ -595,7 +598,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.frequencyDomainPlot = PlotWidget(self.centralwidget)
+        self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy3.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
         self.frequencyDomainPlot.setSizePolicy(sizePolicy3)
