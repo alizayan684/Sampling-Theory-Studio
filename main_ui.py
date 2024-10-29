@@ -408,6 +408,8 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_17)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.addSignalComposerButton = QPushButton(self.widget)
         self.addSignalComposerButton.setObjectName(u"addSignalComposerButton")
         sizePolicy.setHeightForWidth(self.addSignalComposerButton.sizePolicy().hasHeightForWidth())
@@ -415,24 +417,7 @@ class Ui_MainWindow(object):
         self.addSignalComposerButton.setMinimumSize(QSize(0, 0))
         self.addSignalComposerButton.setMaximumSize(QSize(300, 250))
 
-        self.verticalLayout_4.addWidget(self.addSignalComposerButton)
-
-        self.horizontalLayout_18 = QHBoxLayout()
-        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.removeSignalComboBox = QComboBox(self.widget)
-        self.removeSignalComboBox.addItem("")
-        self.removeSignalComboBox.setObjectName(u"removeSignalComboBox")
-        sizePolicy2.setHeightForWidth(self.removeSignalComboBox.sizePolicy().hasHeightForWidth())
-        self.removeSignalComboBox.setSizePolicy(sizePolicy2)
-        self.removeSignalComboBox.setMinimumSize(QSize(100, 30))
-        self.removeSignalComboBox.setMaximumSize(QSize(120, 200))
-        self.removeSignalComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
-"    padding: 2px; /* Padding around the text */\n"
-"    border: 2px solid ; /* Border color */\n"
-"    border-radius: 5px; /* Rounded corners */\n"
-"    font-family: \"Segoe UI\"")
-
-        self.horizontalLayout_18.addWidget(self.removeSignalComboBox)
+        self.horizontalLayout_2.addWidget(self.addSignalComposerButton)
 
         self.removeSignalButton = QPushButton(self.widget)
         self.removeSignalButton.setObjectName(u"removeSignalButton")
@@ -441,7 +426,27 @@ class Ui_MainWindow(object):
         self.removeSignalButton.setMinimumSize(QSize(0, 0))
         self.removeSignalButton.setMaximumSize(QSize(200, 200))
 
-        self.horizontalLayout_18.addWidget(self.removeSignalButton)
+        self.horizontalLayout_2.addWidget(self.removeSignalButton)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout_18 = QHBoxLayout()
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.removeSignalComboBox = QComboBox(self.widget)
+        self.removeSignalComboBox.addItem("")
+        self.removeSignalComboBox.setObjectName(u"removeSignalComboBox")
+        sizePolicy.setHeightForWidth(self.removeSignalComboBox.sizePolicy().hasHeightForWidth())
+        self.removeSignalComboBox.setSizePolicy(sizePolicy)
+        self.removeSignalComboBox.setMinimumSize(QSize(200, 30))
+        self.removeSignalComboBox.setMaximumSize(QSize(5000, 200))
+        self.removeSignalComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
+"    padding: 2px; /* Padding around the text */\n"
+"    border: 2px solid ; /* Border color */\n"
+"    border-radius: 5px; /* Rounded corners */\n"
+"    font-family: \"Segoe UI\"")
+
+        self.horizontalLayout_18.addWidget(self.removeSignalComboBox)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_18)
@@ -639,10 +644,10 @@ class Ui_MainWindow(object):
         self.freqValLabel_4.setText(QCoreApplication.translate("MainWindow", u"mV", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Frequency", None))
         self.freqValLabel_3.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
-        self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add Component", None))
+        self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add", None))
+        self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"ALL", None))
 
-        self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove Component", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Testing Senarios", None))
         self.testComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
         self.testComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Test 1", None))
