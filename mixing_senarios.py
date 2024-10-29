@@ -12,8 +12,8 @@ class MixingScenarios:
     def generate_tests(self):
         """ This function will generate the tests that will be used for the simulation"""
         self.tests['test1'] = {'signal1': [2, 0], 'signal2': [6, 0]}
-        self.tests['test2'] = {'signal1': [4, 30], 'signal2': [5, 0], 'signal3': [10, 90]}
-        self.tests['test3'] = {'signal1': [1, 110], 'signal2': [2, 30], 'signal3': [3, 10], 'signal4': [20, 20]}
+        self.tests['test2'] = {'signal1': [11, 0], 'signal2': [12, 0], 'signal3': [10, 10]}
+        self.tests['test3'] = {'signal1': [1, 30], 'signal2': [10, 30], 'signal3': [30, 10], 'signal4': [20, 20]}
 
     def generate_signal(self, signal_name, signal_params:list):
         """
