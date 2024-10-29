@@ -12,25 +12,27 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_time =  np.linspace(0, self.duration,  1000) # initializing x values of the original signal(time domain)
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
-        self.ShowSampledSignal(self.originalSignal_values, self.signalFreq, self.yLimit, self.f_sampling, self.originalSignal_time) # showing default signal when openning the application
+        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
+        self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
+        self.ShowSampledSignal(self.originalSignal_values, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.originalSignal_time) # showing default signal when openning the application
         
     # showing sampled signal in the graph    
-    def ShowSampledSignal(self, originalSignal, signalFreq, yLimit, f_sampling, originalSignal_time = None): 
+    def ShowSampledSignal(self, originalSignal, signalFreq, yLimit, f_sampling, samples_values, originalSignal_time = None): 
         # I pass the "originalSignal_time" as it will be needed for the default signal that occurs when starting the application and also to keep  the same signal time when changing the slider
         self.clear()
         self.originalSignal_values = originalSignal
         self.signalFreq = signalFreq
         self.yLimit = yLimit
         self.f_sampling = f_sampling
+        self.samples_values = samples_values
         self.originalSignal_time = originalSignal_time
         # if self.originalSignal_time is None :
         #     pass
-        
+        self.yLimit = max(self.originalSignal_values)
         self.setYRange(-self.yLimit, self.yLimit)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.originalSignal_values, pen = 'r')
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
-        self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
         self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
 
 class ReconstructedSignalGraph(pg.PlotWidget):
