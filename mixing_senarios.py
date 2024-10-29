@@ -5,7 +5,15 @@ class MixingScenarios:
     def __init__(self):
         self.signals = {}
         self.time = np.linespace(0, 1, 1000)
+        self.tests = {}
+        self.generate_tests()
     
+
+    def generate_tests(self):
+        """ This function will generate the tests that will be used for the simulation"""
+        self.tests['test1'] = {'signal1': [2, 0], 'signal2': [6, 0]}
+        self.tests['test2'] = {'signal1': [4, 30], 'signal2': [5, 0], 'signal3': [10, 90]}
+        self.tests['test3'] = {'signal1': [1, 110], 'signal2': [2, 30], 'signal3': [3, 10], 'signal4': [20, 20]}
 
     def generate_signal(self, signal_name, signal_params:list):
         """
@@ -15,7 +23,6 @@ class MixingScenarios:
         
         """
         self.signals[signal_name] = np.sin(2*np.pi*signal_params[0]*self.time + signal_params[1])
-        return self.signals[signal_name]
     
     def mix_signals(self):
         """ this function will mix all the signals that have been generated""" 
@@ -25,4 +32,14 @@ class MixingScenarios:
             mixed_signal += signal
         return mixed_signal
     
+    def generate_mixed_signal(self, test_name):
+        """
+        This function will generate the mixed signal based on the test name
+        test_name: str: The name of the test
+        """
+        self.signals = {}
+        test = self.tests[test_name]
+        for signal_name, signal_params in test.items():
+            self.generate_signal(signal_name, signal_params)
+        return self.mix_signals()
     
