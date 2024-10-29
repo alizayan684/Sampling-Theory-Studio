@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
 
 from pyqtgraph import PlotWidget
 
-class Ui_MainWindow(QMainWindow):
+class Ui_Sampler(QMainWindow):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -660,4 +660,5 @@ class Ui_MainWindow(QMainWindow):
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Construction Error", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
     # retranslateUi
+
 
