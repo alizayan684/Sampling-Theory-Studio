@@ -47,7 +47,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
         self.duration = OriginalSignalGraph().duration
         self.reconstructedSignal_time = OriginalSignalGraph().samples_time
         self.reconstructedSignal_values = OriginalSignalGraph().samples_values
-        self.reconstructionMethod = 'whittaker shannon' # initializing the reconstruction method to be whittaker shannon method.
+        self.reconstructionMethod = 'Spline Interpolation' # initializing the reconstruction method to be whittaker shannon method.
         # self.reconstructionMethod = ['whittaker shannon','Fourier Series' , 'Polynomial Interpolation','Spline Interpolation']
         self.ReconstructSampledSignal(OriginalSignalGraph(), self.reconstructionMethod)
 
@@ -115,64 +115,65 @@ class ReconstructedSignalGraph(pg.PlotWidget):
 
     
     # reconstructing using Fourier Series formula
-    # def fourier_series(self, t, t_samples, samples):
-    #     """
-    #     Fourier Series interpolation for signal reconstruction.
+    def fourier_series(self, t, t_samples, samples):
+        """
+        Fourier Series interpolation for signal reconstruction.
         
-    #     Params:
-    #     t : array-like
-    #         The time points at which to reconstruct the signal.
-    #     t_samples : array-like
-    #         The sample time points.
-    #     samples : array-like
-    #         The signal values at the sample points.
+        Params:
+        t : array-like
+            The time points at which to reconstruct the signal.
+        t_samples : array-like
+            The sample time points.
+        samples : array-like
+            The signal values at the sample points.
             
-    #     Returns:
-    #     np.array : The reconstructed signal values at the specified time points t.
-    #     """
-    #     T = 1 / self.f_sampling
-    #     reconstructed_signal = np.zeros_like(t)
-    #     for i in range(len(t_samples)):
-    #         reconstructed_signal += samples[i] * np.sinc((t - t_samples[i]) / T)
-    #     return reconstructed_signal
- 
-    def fourier_series(self, t, t_samples, samples, num_terms=10):
-        """
-        Reconstructs a signal using the Fourier series.
-
-        Parameters:
-        - t : array-like
-            The points in time at which to evaluate the reconstructed signal.
-        - t_samples : array-like
-            Sample times of the original signal.
-        - samples : array-like
-            Amplitude values of the original signal at each sample time.
-        - num_terms : int
-            Number of Fourier terms (harmonics) to include in the reconstruction.
-
         Returns:
-        - reconstructed_signal : array-like
-            The reconstructed signal evaluated at points t.
+        np.array : The reconstructed signal values at the specified time points t.
         """
-
-        # Calculate the period of the signal from t_samples (assuming it is periodic)
-        T = t_samples[-1] - t_samples[0]
-        f0 = 1 / T  # Fundamental frequency
-
-        # Compute the Fourier coefficients a_0, a_k, b_k
-        a_0 = (2 / len(t_samples)) * np.sum(samples)  # DC component
-        reconstructed_signal = a_0 / 2  # Initialize with half the DC component
-
-        # Loop over the number of terms (harmonics) to calculate a_k and b_k
-        for k in range(1, num_terms + 1):
-            # Cosine and sine terms
-            a_k = (2 / len(t_samples)) * np.sum(samples * np.cos(2 * np.pi * k * f0 * t_samples))
-            b_k = (2 / len(t_samples)) * np.sum(samples * np.sin(2 * np.pi * k * f0 * t_samples))
-
-            # Add the k-th term to the reconstructed signal
-            reconstructed_signal += a_k * np.cos(2 * np.pi * k * f0 * t) + b_k * np.sin(2 * np.pi * k * f0 * t)
-
+        T = 1 / self.f_sampling
+        reconstructed_signal = np.zeros_like(t)
+        for i in range(len(t_samples)):
+            reconstructed_signal += samples[i] * np.sinc((t - t_samples[i]) / T)
         return reconstructed_signal
+ 
+    # def fourier_series(self, t, t_samples, samples, num_terms=10):
+    #     """
+    #     Reconstructs a signal using the Fourier series.
+
+    #     Parameters:
+    #     - t : array-like
+    #         The points in time at which to evaluate the reconstructed signal.
+    #     - t_samples : array-like
+    #         Sample times of the original signal.
+    #     - samples : array-like
+    #         Amplitude values of the original signal at each sample time.
+    #     - num_terms : int
+    #         Number of Fourier terms (harmonics) to include in the reconstruction.
+
+    #     Returns:
+    #     - reconstructed_signal : array-like
+    #         The reconstructed signal evaluated at points t.
+    #     """
+
+    #     # Calculate the period of the signal from t_samples (assuming it is periodic)
+    #     T = t_samples[-1] - t_samples[0]
+    #     f0 = 1 / T  # Fundamental frequency
+
+    #     # Compute the Fourier coefficients a_0, a_k, b_k
+    #     a_0 = (2 / len(t_samples)) * np.sum(samples)  # DC component
+    #     reconstructed_signal = a_0 / 2  # Initialize with half the DC component
+
+    #     # Loop over the number of terms (harmonics) to calculate a_k and b_k
+    #     for k in range(1, num_terms + 1):
+    #         # Cosine and sine terms
+    #         a_k = (2 / len(t_samples)) * np.sum(samples * np.cos(2 * np.pi * k * f0 * t_samples))
+    #         b_k = (2 / len(t_samples)) * np.sum(samples * np.sin(2 * np.pi * k * f0 * t_samples))
+
+    #         # Add the k-th term to the reconstructed signal
+    #         reconstructed_signal += a_k * np.cos(2 * np.pi * k * f0 * t) + b_k * np.sin(2 * np.pi * k * f0 * t)
+
+    #     return reconstructed_signal
+    
     # reconstructing using Whittaker Shannon formula
     def whittaker_shannon(self,t, t_samples, samples):
         """
