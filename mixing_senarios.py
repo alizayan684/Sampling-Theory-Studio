@@ -16,3 +16,13 @@ class MixingScenarios:
         """
         self.signals[signal_name] = np.sin(2*np.pi*signal_params[0]*self.time + signal_params[1])
         return self.signals[signal_name]
+    
+    def mix_signals(self):
+        """ this function will mix all the signals that have been generated""" 
+        mixed_signal = np.zeros(len(self.time))
+        signals = self.signals.values()
+        for signal in signals:
+            mixed_signal += signal
+        return mixed_signal
+    
+    
