@@ -95,7 +95,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def addSignal(self):
         self.amplitudes.append(self.amplitudeComposerSlider.value())
         self.frequencies.append(self.freqComposerSlider.value())
-        self.signalComposerCompoBox.addItem(f"Signal {self.signalComposerCompoBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
+        self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
 
         currSignalValues = self.originalSignalPlot.originalSignal_values
         currSignalValues += self.amplitudes[-1] * np.sin(2 * np.pi * self.frequencies[-1] * self.originalSignalPlot.originalSignal_time)
@@ -114,7 +114,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         if(len(self.amplitudes) == 1):
             return
         
-        idxRemoved = self.signalComposerCompoBox.currentIndex()
+        idxRemoved = self.removeSignalComboBox.currentIndex()
         currSignalValues = self.originalSignalPlot.originalSignal_values
         currSignalValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time)
         currSampleValues = self.originalSignalPlot.samples_values
@@ -129,11 +129,11 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.amplitudes[i] = self.amplitudes[i + 1]
             self.frequencies[i] = self.frequencies[i + 1]
             
-            currItemText = self.signalComposerCompoBox.itemText(i + 1)
+            currItemText = self.removeSignalComboBox.itemText(i + 1)
             modifiedText = currItemText[ : 7] + f"{i + 1}" + currItemText[8 : ]
-            self.signalComposerCompoBox.setItemText(i, modifiedText)
+            self.removeSignalComboBox.setItemText(i, modifiedText)
 
-        self.signalComposerCompoBox.removeItem(len(self.amplitudes) - 1)
+        self.removeSignalComboBox.removeItem(len(self.amplitudes) - 1)
         self.amplitudes.pop()
         self.frequencies.pop()
             
