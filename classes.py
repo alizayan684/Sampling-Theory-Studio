@@ -51,7 +51,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
         self.duration = OriginalSignalGraph().duration
         self.reconstructedSignal_time = OriginalSignalGraph().samples_time
         self.reconstructedSignal_values = OriginalSignalGraph().samples_values + OriginalSignalGraph().sampleNoise
-        self.reconstructionMethod = 'Spline Interpolation' # initializing the reconstruction method to be whittaker shannon method.
+        self.reconstructionMethod = 'whittaker shannon' # initializing the reconstruction method to be whittaker shannon method.
         # self.reconstructionMethod = ['whittaker shannon','Fourier Series' , 'Polynomial Interpolation','Spline Interpolation']
         self.ReconstructSampledSignal(OriginalSignalGraph(), self.reconstructionMethod)
 
@@ -233,29 +233,28 @@ class ReconstructedSignalGraph(pg.PlotWidget):
     
     # reconstructing using Spline Interpolation formula
     def spline_interpolation(self, t, t_samples, samples):
+        # def rectangular_interpolation(self, t, t_samples, samples):
         """
-        Reconstructs a signal using cubic spline interpolation.
+        Reconstructs a signal using rectangular interpolation.
 
         Parameters:
         - t : array-like
-            Points in time where the interpolated signal will be evaluated.
+            Points in time where the reconstructed signal will be evaluated.
         - t_samples : array-like
             Sample times of the original signal.
         - samples : array-like
             Amplitude values of the original signal at each sample time.
 
         Returns:
-        - interpolated_signal : array-like
-            The interpolated signal evaluated at points t.
+        - reconstructed_signal : array-like
+            The reconstructed signal evaluated at points t.
         """
-        # Create the cubic spline interpolator
-        spline = CubicSpline(t_samples, samples)
-
-        # Evaluate the spline at the desired points t
-        interpolated_signal = spline(t)
-
-        return interpolated_signal
- 
+        reconstructed_signal = np.zeros_like(t, dtype=float)
+        for i, t_val in enumerate(t):
+            # Find the closest sample time
+            closest_sample_index = np.argmin(np.abs(t_samples - t_val))
+            reconstructed_signal[i] = samples[closest_sample_index]
+        return reconstructed_signal
  
  ###################################################################################################################################  
     
@@ -285,26 +284,57 @@ class DifferenceGraph(pg.PlotWidget):
         self.plot(self.originalSignal_time, self.differenceSignal_values, pen = 'y') # plotting the difference between original and reconstructed signals at the same time values (time values of the original signal).
 
 class FreqSignalGraph(pg.PlotWidget):
-    def __init__(self, parent=None):
+    def __init__(self, frequenciesOfInterest, parent=None):
         super().__init__(parent)
-        self.ShowSignalFreqDomain(OriginalSignalGraph())
-
-    def ShowSignalFreqDomain(self, originalSignal_instance):
-        
+        self.ShowSignalFreqDomain(frequenciesOfInterest, OriginalSignalGraph())
+    
+    
+    def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
         """
         Params:
         originalSignal_instance: already made instance of the OriginalSignalGraph to plot the corresponding signal in the frequency domain graph.
-        
         """
         self.clear()
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
-        self.f_sampling = originalSignal_instance.f_sampling  # samples per second
+        self.f_sampling = originalSignal_instance.f_sampling  # Samples per second
+        self.f_max =  originalSignal_instance.signalFreq
         
+        aliasedFrequencies = []
+        
+        for freq in frequenciesOfInterest:
+            if freq > (self.f_sampling / 2):
+                aliased_freq = self.f_sampling - freq
+                # Add the aliased frequency to the original frequencies list
+                aliasedFrequencies.append(aliased_freq)
+
         # Frequency domain
-        fft_values = np.fft.fft(self.originalSignal_values)           # apply FFT (contains complex values representing the amplitude and phase info)
-        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / self.f_sampling)  # frequency bins
-        fft_magnitude = np.abs(fft_values) / len(self.originalSignal_values)  # magnitude (normalized) (extracting the magnitude from the complex values)
+        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
         
-        self.plot(fft_freqs, fft_magnitude, pen = 'b')
+        # Only plot the positive frequencies
+        positive_freqs = fft_freqs[:len(fft_freqs) // 2]
+        impulse_magnitude = np.zeros_like(positive_freqs)
+        
+        for freq in frequenciesOfInterest:
+            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            if impulse_index.size > 0:
+                impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+                
+        if self.f_sampling < 2 * self.f_max:
+            for freq in aliasedFrequencies:
+                impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+                if impulse_index.size > 0:
+                    impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+                    
+        if impulse_index.size > 0:
+            # Choose color based on frequency
+            if freq <= (self.f_sampling / 2):
+                color = 'g'  # Green for frequencies <= Nyquist
+            else:
+                    color = 'r' 
+
+        # Plotting the frequency domain representation
+        self.setXRange(0, 11)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin=0, xMax=11, yMin=-0.02, yMax=0.3)
+        self.plot(positive_freqs, impulse_magnitude, pen='b')

@@ -622,7 +622,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
+        self.frequencyDomainPlot = cl.FreqSignalGraph([5], self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy3.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
         self.frequencyDomainPlot.setSizePolicy(sizePolicy3)
@@ -688,7 +688,7 @@ class Ui_Sampler(QMainWindow):
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Construction Method", None))
 
-        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Whittaker Shannon", None))
+        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"whittaker shannon", None))
         self.constructMethodComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Fourier Series", None))
         self.constructMethodComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Polynomial Interpolation", None))
         self.constructMethodComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Spline Interpolation", None))
