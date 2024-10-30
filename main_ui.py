@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'UI_M.ui'
+## Form generated from reading UI file 'UI_final.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -11,38 +11,54 @@
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
     QHBoxLayout, QLCDNumber, QLabel, QMainWindow,
     QPushButton, QSizePolicy, QSlider, QStatusBar,
     QVBoxLayout, QWidget)
 
 from pyqtgraph import PlotWidget
-
 import classes as cl
 
 class Ui_Sampler(QMainWindow):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(576, 782)
+        MainWindow.resize(882, 782)
         MainWindow.setStyleSheet(u"QWidget {\n"
-"    color: #333333;\n"
+"    color: #FFFFFF;\n"
 "    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n"
 "    font-size: 14px;\n"
-"	background-color: rgb(72, 72, 72);\n"
+"	background-color: rgb(2, 70, 113);\n"
+"\n"
 "}\n"
 "QLabel {\n"
 "color: rgb(255, 255, 255);\n"
 "background-color: rgb(48, 48, 48);\n"
+"	background-color: rgb(0, 0, 57);\n"
+"	background-color: rgb(0, 43, 63);\n"
+"\n"
+"\n"
 "    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n"
-"    font-size: 14px;\n"
+"    font-size: 15px;\n"
 "    padding: 5px;\n"
 "    border-radius: 5px;\n"
-"}")
+"}\n"
+"")
+        self.action1 = QAction(MainWindow)
+        self.action1.setObjectName(u"action1")
+        self.action2 = QAction(MainWindow)
+        self.action2.setObjectName(u"action2")
+        self.action3 = QAction(MainWindow)
+        self.action3.setObjectName(u"action3")
+        self.action4 = QAction(MainWindow)
+        self.action4.setObjectName(u"action4")
+        self.action5 = QAction(MainWindow)
+        self.action5.setObjectName(u"action5")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -50,9 +66,10 @@ class Ui_Sampler(QMainWindow):
         self.widget = QWidget(self.centralwidget)
         self.widget.setObjectName(u"widget")
         self.widget.setStyleSheet(u"QWidget{\n"
-"background-color: rgb(255, 255, 255);\n"
-"    border-radius: 20px;\n"
-"\n"
+"    background-color: rgb(255, 255, 255);\n"
+"	color: rgb(0, 0, 0);\n"
+"    border-radius: 15px;\n"
+"border: 1px solid #000000;\n"
 "}\n"
 "\n"
 "/* Style for QPushButton */\n"
@@ -88,6 +105,37 @@ class Ui_Sampler(QMainWindow):
 "    border: 1px solid #cccccc;\n"
 "	border-color: rgb(91, 91, 91);\n"
 "    border-radius: 5px;\n"
+"}\n"
+"/* Slider */\n"
+"QSlider {\n"
+"    background-color: transp"
+                        "arent;\n"
+"}\n"
+"\n"
+"QSlider::groove:horizontal {\n"
+"    border: 1px solid #b1b1b1;\n"
+"    height: 8px;\n"
+"    background-color: #f1f1f1;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QSlider::handle:horizontal {\n"
+"    border: none;\n"
+"	background-color: rgb(0, 62, 120);\n"
+"    height: 16px;\n"
+"    width: 16px;\n"
+"    margin: -4px 0;\n"
+"    border-radius: 6px;\n"
+"}\n"
+"\n"
+"QSlider::handle:horizontal:hover {\n"
+"background-color: rgb(0, 89, 255);\n"
+"\n"
+"}\n"
+"\n"
+"QSlider::handle:horizontal:pressed {\n"
+"    \n"
+"	background-color: rgb(0, 255, 255);\n"
 "}\n"
 "")
         self.verticalLayout = QVBoxLayout(self.widget)
@@ -148,6 +196,8 @@ class Ui_Sampler(QMainWindow):
         self.normFreqLCD.setSizePolicy(sizePolicy)
         self.normFreqLCD.setMinimumSize(QSize(0, 0))
         self.normFreqLCD.setMaximumSize(QSize(100, 200))
+        self.normFreqLCD.setStyleSheet(u"color: rgb(0, 0, 0);\n"
+"")
 
         self.verticalLayout_7.addWidget(self.normFreqLCD)
 
@@ -157,6 +207,7 @@ class Ui_Sampler(QMainWindow):
         self.actualFreqLCD.setSizePolicy(sizePolicy)
         self.actualFreqLCD.setMinimumSize(QSize(0, 0))
         self.actualFreqLCD.setMaximumSize(QSize(100, 200))
+        self.actualFreqLCD.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.verticalLayout_7.addWidget(self.actualFreqLCD)
 
@@ -223,11 +274,20 @@ class Ui_Sampler(QMainWindow):
         self.signalToNoiseLCD.setSizePolicy(sizePolicy)
         self.signalToNoiseLCD.setMinimumSize(QSize(0, 0))
         self.signalToNoiseLCD.setMaximumSize(QSize(50, 200))
+        self.signalToNoiseLCD.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.horizontalLayout_15.addWidget(self.signalToNoiseLCD)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_15)
+
+        self.clearAllButton = QPushButton(self.widget)
+        self.clearAllButton.setObjectName(u"clearAllButton")
+        sizePolicy.setHeightForWidth(self.clearAllButton.sizePolicy().hasHeightForWidth())
+        self.clearAllButton.setSizePolicy(sizePolicy)
+        self.clearAllButton.setMaximumSize(QSize(300, 200))
+
+        self.verticalLayout_4.addWidget(self.clearAllButton)
 
         self.line_2 = QFrame(self.widget)
         self.line_2.setObjectName(u"line_2")
@@ -245,7 +305,7 @@ class Ui_Sampler(QMainWindow):
         self.label_15.setMaximumSize(QSize(16777215, 100))
         self.label_15.setStyleSheet(u"QLabel {\n"
 "color: rgb(255, 255, 255);\n"
-"background-color: rgb(48, 48, 48);\n"
+"	background-color: rgb(3, 22, 53);\n"
 "    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n"
 "    font-size: 17px;\n"
 "    padding: 5px;\n"
@@ -283,8 +343,22 @@ class Ui_Sampler(QMainWindow):
         self.amplitudeComposerLCD.setSizePolicy(sizePolicy)
         self.amplitudeComposerLCD.setMinimumSize(QSize(50, 0))
         self.amplitudeComposerLCD.setMaximumSize(QSize(50, 100))
+        self.amplitudeComposerLCD.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.horizontalLayout_16.addWidget(self.amplitudeComposerLCD)
+
+        self.freqValLabel_4 = QLabel(self.widget)
+        self.freqValLabel_4.setObjectName(u"freqValLabel_4")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.freqValLabel_4.sizePolicy().hasHeightForWidth())
+        self.freqValLabel_4.setSizePolicy(sizePolicy2)
+        self.freqValLabel_4.setMinimumSize(QSize(0, 0))
+        self.freqValLabel_4.setMaximumSize(QSize(40, 200))
+        self.freqValLabel_4.setStyleSheet(u"font: 10pt \"MS Shell Dlg 2\";")
+
+        self.horizontalLayout_16.addWidget(self.freqValLabel_4)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_16)
@@ -318,40 +392,33 @@ class Ui_Sampler(QMainWindow):
         self.freqComposerLCD.setSizePolicy(sizePolicy)
         self.freqComposerLCD.setMinimumSize(QSize(50, 0))
         self.freqComposerLCD.setMaximumSize(QSize(50, 100))
+        self.freqComposerLCD.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.horizontalLayout_17.addWidget(self.freqComposerLCD)
+
+        self.freqValLabel_3 = QLabel(self.widget)
+        self.freqValLabel_3.setObjectName(u"freqValLabel_3")
+        sizePolicy2.setHeightForWidth(self.freqValLabel_3.sizePolicy().hasHeightForWidth())
+        self.freqValLabel_3.setSizePolicy(sizePolicy2)
+        self.freqValLabel_3.setMinimumSize(QSize(0, 0))
+        self.freqValLabel_3.setMaximumSize(QSize(40, 200))
+        self.freqValLabel_3.setStyleSheet(u"")
+
+        self.horizontalLayout_17.addWidget(self.freqValLabel_3)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_17)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.addSignalComposerButton = QPushButton(self.widget)
         self.addSignalComposerButton.setObjectName(u"addSignalComposerButton")
         sizePolicy.setHeightForWidth(self.addSignalComposerButton.sizePolicy().hasHeightForWidth())
         self.addSignalComposerButton.setSizePolicy(sizePolicy)
         self.addSignalComposerButton.setMinimumSize(QSize(0, 0))
-        self.addSignalComposerButton.setMaximumSize(QSize(250, 250))
+        self.addSignalComposerButton.setMaximumSize(QSize(300, 250))
 
-        self.verticalLayout_4.addWidget(self.addSignalComposerButton)
-
-        self.horizontalLayout_18 = QHBoxLayout()
-        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.signalComposerCompoBox = QComboBox(self.widget)
-        self.signalComposerCompoBox.addItem("")
-        self.signalComposerCompoBox.setObjectName(u"signalComposerCompoBox")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.signalComposerCompoBox.sizePolicy().hasHeightForWidth())
-        self.signalComposerCompoBox.setSizePolicy(sizePolicy2)
-        self.signalComposerCompoBox.setMinimumSize(QSize(100, 30))
-        self.signalComposerCompoBox.setMaximumSize(QSize(120, 200))
-        self.signalComposerCompoBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
-"    padding: 2px; /* Padding around the text */\n"
-"    border: 2px solid ; /* Border color */\n"
-"    border-radius: 5px; /* Rounded corners */\n"
-"    font-family: \"Segoe UI\"")
-
-        self.horizontalLayout_18.addWidget(self.signalComposerCompoBox)
+        self.horizontalLayout_2.addWidget(self.addSignalComposerButton)
 
         self.removeSignalButton = QPushButton(self.widget)
         self.removeSignalButton.setObjectName(u"removeSignalButton")
@@ -360,16 +427,85 @@ class Ui_Sampler(QMainWindow):
         self.removeSignalButton.setMinimumSize(QSize(0, 0))
         self.removeSignalButton.setMaximumSize(QSize(200, 200))
 
-        self.horizontalLayout_18.addWidget(self.removeSignalButton)
+        self.horizontalLayout_2.addWidget(self.removeSignalButton)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout_18 = QHBoxLayout()
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.removeSignalComboBox = QComboBox(self.widget)
+        self.removeSignalComboBox.addItem("")
+        self.removeSignalComboBox.setObjectName(u"removeSignalComboBox")
+        sizePolicy.setHeightForWidth(self.removeSignalComboBox.sizePolicy().hasHeightForWidth())
+        self.removeSignalComboBox.setSizePolicy(sizePolicy)
+        self.removeSignalComboBox.setMinimumSize(QSize(200, 30))
+        self.removeSignalComboBox.setMaximumSize(QSize(5000, 200))
+        self.removeSignalComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
+"    padding: 2px; /* Padding around the text */\n"
+"    border: 2px solid ; /* Border color */\n"
+"    border-radius: 5px; /* Rounded corners */\n"
+"    font-family: \"Segoe UI\"")
+
+        self.horizontalLayout_18.addWidget(self.removeSignalComboBox)
 
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_18)
+
+        self.label_18 = QLabel(self.widget)
+        self.label_18.setObjectName(u"label_18")
+        sizePolicy.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
+        self.label_18.setSizePolicy(sizePolicy)
+        self.label_18.setMinimumSize(QSize(50, 0))
+        self.label_18.setMaximumSize(QSize(16777215, 100))
+        self.label_18.setStyleSheet(u"QLabel {\n"
+"color: rgb(255, 255, 255);\n"
+"	background-color: rgb(3, 22, 53);\n"
+"    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n"
+"    font-size: 17px;\n"
+"    padding: 5px;\n"
+"    border-radius: 5px;\n"
+"}")
+
+        self.verticalLayout_4.addWidget(self.label_18)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.testComboBox = QComboBox(self.widget)
+        self.testComboBox.addItem("")
+        self.testComboBox.addItem("")
+        self.testComboBox.addItem("")
+        self.testComboBox.addItem("")
+        self.testComboBox.setObjectName(u"testComboBox")
+        sizePolicy2.setHeightForWidth(self.testComboBox.sizePolicy().hasHeightForWidth())
+        self.testComboBox.setSizePolicy(sizePolicy2)
+        self.testComboBox.setMinimumSize(QSize(100, 30))
+        self.testComboBox.setMaximumSize(QSize(120, 200))
+        self.testComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
+"    padding: 2px; /* Padding around the text */\n"
+"    border: 2px solid ; /* Border color */\n"
+"    border-radius: 5px; /* Rounded corners */\n"
+"    font-family: \"Segoe UI\"")
+
+        self.horizontalLayout.addWidget(self.testComboBox)
+
+        self.generateTestButton = QPushButton(self.widget)
+        self.generateTestButton.setObjectName(u"generateTestButton")
+        sizePolicy.setHeightForWidth(self.generateTestButton.sizePolicy().hasHeightForWidth())
+        self.generateTestButton.setSizePolicy(sizePolicy)
+        self.generateTestButton.setMinimumSize(QSize(0, 0))
+        self.generateTestButton.setMaximumSize(QSize(200, 200))
+
+        self.horizontalLayout.addWidget(self.generateTestButton)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
 
 
         self.verticalLayout.addLayout(self.verticalLayout_4)
 
 
-        self.gridLayout.addWidget(self.widget, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.widget, 1, 0, 1, 1)
 
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
@@ -380,12 +516,6 @@ class Ui_Sampler(QMainWindow):
         self.label_12.setStyleSheet(u"")
 
         self.horizontalLayout_11.addWidget(self.label_12)
-
-        self.label_9 = QLabel(self.centralwidget)
-        self.label_9.setObjectName(u"label_9")
-        self.label_9.setStyleSheet(u"")
-
-        self.horizontalLayout_11.addWidget(self.label_9)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_11)
@@ -402,12 +532,22 @@ class Ui_Sampler(QMainWindow):
         self.originalSignalPlot.setStyleSheet(u"    background-color: #000000; /* Dark background */\n"
 "    color: #D8DEE9; /* Light text color */\n"
 "    font-size: 16px; /* Font size */\n"
-"    border: 2px solid #4C566A; /* Border color */\n"
+"    border: 2px solid; /* Border color */\n"
+"border-color: rgb(0, 230, 255);\n"
 "    border-radius: 5px; /* Rounded corners */\n"
 "    font-family: \"Segoe UI\", \"Helvetica Neue\", \"Arial\", sans-serif; /* Font family */\n"
 "")
 
         self.horizontalLayout_3.addWidget(self.originalSignalPlot)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+
+        self.label_9 = QLabel(self.centralwidget)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setStyleSheet(u"")
+
+        self.verticalLayout_3.addWidget(self.label_9)
 
         self.sampledSignalPlot = cl.ReconstructedSignalGraph(self.centralwidget)
         self.sampledSignalPlot.setObjectName(u"sampledSignalPlot")
@@ -416,15 +556,13 @@ class Ui_Sampler(QMainWindow):
         self.sampledSignalPlot.setStyleSheet(u"    background-color: #000000; /* Dark background */\n"
 "    color: #D8DEE9; /* Light text color */\n"
 "    font-size: 16px; /* Font size */\n"
-"    border: 2px solid #4C566A; /* Border color */\n"
+"    border: 2px solid; /* Border color */\n"
+"border-color: rgb(0, 230, 255);\n"
 "    border-radius: 5px; /* Rounded corners */\n"
 "    font-family: \"Segoe UI\", \"Helvetica Neue\", \"Arial\", sans-serif; /* Font family */\n"
 "")
 
-        self.horizontalLayout_3.addWidget(self.sampledSignalPlot)
-
-
-        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.verticalLayout_3.addWidget(self.sampledSignalPlot)
 
         self.horizontalLayout_10 = QHBoxLayout()
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
@@ -432,11 +570,6 @@ class Ui_Sampler(QMainWindow):
         self.label_11.setObjectName(u"label_11")
 
         self.horizontalLayout_10.addWidget(self.label_11)
-
-        self.label_10 = QLabel(self.centralwidget)
-        self.label_10.setObjectName(u"label_10")
-
-        self.horizontalLayout_10.addWidget(self.label_10)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_10)
@@ -450,13 +583,21 @@ class Ui_Sampler(QMainWindow):
         self.differencePlot.setStyleSheet(u"    background-color: #000000; /* Dark background */\n"
 "    color: #D8DEE9; /* Light text color */\n"
 "    font-size: 16px; /* Font size */\n"
-"    border: 2px solid #4C566A; /* Border color */\n"
+"    border: 2px solid; /* Border color */\n"
+"border-color: rgb(0, 230, 255);\n"
 "    border-radius: 5px; /* Rounded corners */\n"
 "    font-family: \"Segoe UI\", \"Helvetica Neue\", \"Arial\", sans-serif; /* Font family */\n"
 "")
 
-        self.horizontalLayout_4.addWidget(self.differencePlot)
+        self.verticalLayout_3.addWidget(self.differencePlot)
 
+        self.label_10 = QLabel(self.centralwidget)
+        self.label_10.setObjectName(u"label_10")
+
+        self.verticalLayout_3.addWidget(self.label_10)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy3.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
@@ -464,7 +605,8 @@ class Ui_Sampler(QMainWindow):
         self.frequencyDomainPlot.setStyleSheet(u"    background-color: #000000; /* Dark background */\n"
 "    color: #D8DEE9; /* Light text color */\n"
 "    font-size: 16px; /* Font size */\n"
-"    border: 2px solid #4C566A; /* Border color */\n"
+"    border: 2px solid; /* Border color */\n"
+"border-color: rgb(0, 230, 255);\n"
 "    border-radius: 5px; /* Rounded corners */\n"
 "    font-family: \"Segoe UI\", \"Helvetica Neue\", \"Arial\", sans-serif; /* Font family */\n"
 "")
@@ -475,7 +617,7 @@ class Ui_Sampler(QMainWindow):
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
 
 
-        self.gridLayout.addLayout(self.verticalLayout_3, 0, 1, 1, 1)
+        self.gridLayout.addLayout(self.verticalLayout_3, 1, 1, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
@@ -489,21 +631,37 @@ class Ui_Sampler(QMainWindow):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.action1.setText(QCoreApplication.translate("MainWindow", u"1", None))
+        self.action2.setText(QCoreApplication.translate("MainWindow", u"2", None))
+        self.action3.setText(QCoreApplication.translate("MainWindow", u"3", None))
+        self.action4.setText(QCoreApplication.translate("MainWindow", u"4", None))
+        self.action5.setText(QCoreApplication.translate("MainWindow", u"5", None))
         self.browseSignalButton.setText(QCoreApplication.translate("MainWindow", u"Browse Signal", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Sampling Frequency", None))
         self.fmaxLabel_2.setText(QCoreApplication.translate("MainWindow", u"fmax", None))
         self.freqValLabel_2.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Signal To Noise Ratio", None))
+        self.clearAllButton.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Signal Composer", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Amplitude", None))
+        self.freqValLabel_4.setText(QCoreApplication.translate("MainWindow", u"mV", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Frequency", None))
-        self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add Signal", None))
-        self.signalComposerCompoBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp: 1mV | Freq: 5HZ", None))
+        self.freqValLabel_3.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
+        self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add", None))
+        self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
+        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"ALL", None))
 
-        self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove Signal", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Testing Senarios", None))
+        self.testComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
+        self.testComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Test 1", None))
+        self.testComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Test 2", None))
+        self.testComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Test 3", None))
+
+        self.generateTestButton.setText(QCoreApplication.translate("MainWindow", u"Generate", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Original Signal", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Reconstructed Signal", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Construction Error", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
     # retranslateUi
+
 
