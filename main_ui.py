@@ -649,7 +649,7 @@ class Ui_Sampler(QMainWindow):
         self.freqValLabel_3.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
         self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
-        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"ALL", None))
+        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp : 1mV | Freq : 5Hz", None))
 
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Testing Senarios", None))
         self.testComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
