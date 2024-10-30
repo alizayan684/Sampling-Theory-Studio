@@ -13,7 +13,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_time =  np.linspace(0, self.duration,  1000) # initializing x values of the original signal(time domain)
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
-        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
+        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
         self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
         self.noise = 0
         self.ShowSampledSignal(self.originalSignal_values, self.noise, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.originalSignal_time) # showing default signal when openning the application
@@ -25,7 +25,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_values = originalSignal
         self.noise = noise
         self.signalFreq = signalFreq
-        self.yLimit = yLimit
+        # self.yLimit = yLimit
         self.f_sampling = f_sampling
         self.samples_values = samples_values
         self.originalSignal_time = originalSignal_time

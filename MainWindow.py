@@ -90,16 +90,19 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         
         mix = MixingScenarios()
         result = None
+        test = None
         if current == 1:
             result = mix.generate_mixed_signal("test1")
+            test = "test1"
         elif current == 2:
             result = mix.generate_mixed_signal("test2")
+            test = "test2"
         else:
             result = mix.generate_mixed_signal("test3")
-        self.originalSignalPlot.ShowSampledSignal(result)
-        self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
-        self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-        self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+            test = "test3"
+        # interpolate the signal to match the sampling frequency
+        x = np.interp(self.originalSignalPlot.samples_time, mix.time, result)
+        self.originalSignalPlot.ShowSampledSignal(result, noise= self.originalSignalPlot.noise, signalFreq= mix.tests[test]['fmax'], yLimit= self.originalSignalPlot.yLimit, f_sampling= self.originalSignalPlot.f_sampling, samples_values= x)
             
         
     def setNoise(self):

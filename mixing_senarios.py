@@ -11,9 +11,9 @@ class MixingScenarios:
 
     def generate_tests(self):
         """ This function will generate the tests that will be used for the simulation"""
-        self.tests['test1'] = {'signal1': [2, 0], 'signal2': [6, 0]}
-        self.tests['test2'] = {'signal1': [11, 0], 'signal2': [12, 0], 'signal3': [10, 10]}
-        self.tests['test3'] = {'signal1': [1, 30], 'signal2': [10, 30], 'signal3': [30, 10], 'signal4': [20, 20]}
+        self.tests['test1'] = {'signal1': [2, 0], 'signal2': [6, 0], 'fmax': 6}
+        self.tests['test2'] = {'signal1': [11, 0], 'signal2': [12, 0], 'signal3': [10, 10], 'fmax': 12}
+        self.tests['test3'] = {'signal1': [1, 30], 'signal2': [10, 30], 'signal3': [30, 10], 'signal4': [20, 20], 'fmax': 30}
 
     def generate_signal(self, signal_name, signal_params:list):
         """
@@ -40,6 +40,7 @@ class MixingScenarios:
         self.signals = {}
         test = self.tests[test_name]
         for signal_name, signal_params in test.items():
-            self.generate_signal(signal_name, signal_params)
+            if signal_name != 'fmax':
+               self.generate_signal(signal_name, signal_params)
         return self.mix_signals()
     
