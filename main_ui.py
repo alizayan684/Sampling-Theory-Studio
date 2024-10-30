@@ -22,9 +22,8 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
     QVBoxLayout, QWidget)
 
 from pyqtgraph import PlotWidget
-import classes as cl
 
-class Ui_Sampler(QMainWindow):
+class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -281,6 +280,39 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_15)
 
+        self.label_19 = QLabel(self.widget)
+        self.label_19.setObjectName(u"label_19")
+        sizePolicy.setHeightForWidth(self.label_19.sizePolicy().hasHeightForWidth())
+        self.label_19.setSizePolicy(sizePolicy)
+        self.label_19.setMinimumSize(QSize(50, 0))
+        self.label_19.setMaximumSize(QSize(16777215, 100))
+        self.label_19.setStyleSheet(u"QLabel {\n"
+"    font-size: 15px;\n"
+"border: 2px solid;\n"
+"	border-color: rgb(0, 157, 255);\n"
+"}\n"
+"")
+
+        self.verticalLayout_4.addWidget(self.label_19)
+
+        self.constructMethodComboBox = QComboBox(self.widget)
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.setObjectName(u"constructMethodComboBox")
+        sizePolicy.setHeightForWidth(self.constructMethodComboBox.sizePolicy().hasHeightForWidth())
+        self.constructMethodComboBox.setSizePolicy(sizePolicy)
+        self.constructMethodComboBox.setMinimumSize(QSize(203, 30))
+        self.constructMethodComboBox.setMaximumSize(QSize(51000, 200))
+        self.constructMethodComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
+"    padding: 2px; /* Padding around the text */\n"
+"    border: 2px solid ; /* Border color */\n"
+"    border-radius: 5px; /* Rounded corners */\n"
+"    font-family: \"Segoe UI\"")
+
+        self.verticalLayout_4.addWidget(self.constructMethodComboBox)
+
         self.clearAllButton = QPushButton(self.widget)
         self.clearAllButton.setObjectName(u"clearAllButton")
         sizePolicy.setHeightForWidth(self.clearAllButton.sizePolicy().hasHeightForWidth())
@@ -522,7 +554,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.originalSignalPlot = cl.OriginalSignalGraph(self.centralwidget)  # make this an object of the originalSignalGraph class in the 'MainWindow.py'.
+        self.originalSignalPlot = PlotWidget(self.centralwidget)
         self.originalSignalPlot.setObjectName(u"originalSignalPlot")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy3.setHorizontalStretch(0)
@@ -549,7 +581,7 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_3.addWidget(self.label_9)
 
-        self.sampledSignalPlot = cl.ReconstructedSignalGraph(self.centralwidget)
+        self.sampledSignalPlot = PlotWidget(self.centralwidget)
         self.sampledSignalPlot.setObjectName(u"sampledSignalPlot")
         sizePolicy3.setHeightForWidth(self.sampledSignalPlot.sizePolicy().hasHeightForWidth())
         self.sampledSignalPlot.setSizePolicy(sizePolicy3)
@@ -574,9 +606,7 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_10)
 
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.differencePlot = cl.DifferenceGraph(self.centralwidget)
+        self.differencePlot = PlotWidget(self.centralwidget)
         self.differencePlot.setObjectName(u"differencePlot")
         sizePolicy3.setHeightForWidth(self.differencePlot.sizePolicy().hasHeightForWidth())
         self.differencePlot.setSizePolicy(sizePolicy3)
@@ -598,7 +628,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
+        self.frequencyDomainPlot = PlotWidget(self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy3.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
         self.frequencyDomainPlot.setSizePolicy(sizePolicy3)
@@ -641,6 +671,12 @@ class Ui_Sampler(QMainWindow):
         self.fmaxLabel_2.setText(QCoreApplication.translate("MainWindow", u"fmax", None))
         self.freqValLabel_2.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Signal To Noise Ratio", None))
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Construction Method", None))
+        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Whittaker Shannon", None))
+        self.constructMethodComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Fourier Series", None))
+        self.constructMethodComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Polynomial Interpolation", None))
+        self.constructMethodComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Spline Interpolation", None))
+
         self.clearAllButton.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Signal Composer", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Amplitude", None))
@@ -649,7 +685,7 @@ class Ui_Sampler(QMainWindow):
         self.freqValLabel_3.setText(QCoreApplication.translate("MainWindow", u"Hz", None))
         self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
-        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp : 1mV | Freq : 5Hz", None))
+        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"ALL", None))
 
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Testing Senarios", None))
         self.testComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
@@ -663,5 +699,4 @@ class Ui_Sampler(QMainWindow):
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Construction Error", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
     # retranslateUi
-
 
