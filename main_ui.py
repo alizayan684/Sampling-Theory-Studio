@@ -498,7 +498,7 @@ class Ui_Sampler(QMainWindow):
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Amplitude", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Frequency", None))
         self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add Signal", None))
-        self.signalComposerCompoBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp: 1V | Freq: 5HZ", None))
+        self.signalComposerCompoBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp: 1mV | Freq: 5HZ", None))
 
         self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove Signal", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Original Signal", None))

@@ -75,7 +75,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def addSignal(self):
         self.amplitudes.append(self.amplitudeComposerSlider.value())
         self.frequencies.append(self.freqComposerSlider.value())
-        self.signalComposerCompoBox.addItem(f"Signal {self.signalComposerCompoBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()} | Freq: {self.freqComposerSlider.value()}HZ")
+        self.signalComposerCompoBox.addItem(f"Signal {self.signalComposerCompoBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
 
         currValues = self.originalSignalPlot.originalSignal_values
         currValues += self.amplitudes[-1] * np.sin(2 * np.pi * self.frequencies[-1] * self.originalSignalPlot.originalSignal_time)
@@ -91,8 +91,31 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.freqComposerSlider.setValue(1)
     
     def removeSignal(self):
-        self.amplitudeComposerSlider.setValue(1)
-        self.freqComposerSlider.setValue(1)
+        if(len(self.amplitudes) == 1):
+            return
+        
+        idxRemoved = self.signalComposerCompoBox.currentIndex()
+        currValues = self.originalSignalPlot.originalSignal_values
+        currValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time)
+        currSampleValues = self.originalSignalPlot.samples_values
+        currSampleValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.samples_time)
+
+        self.originalSignalPlot.ShowSampledSignal(originalSignal= currValues, signalFreq= self.originalSignalPlot.signalFreq, yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, originalSignal_time= self.originalSignalPlot.originalSignal_time)
+        self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+        self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+
+        for i in range(idxRemoved, len(self.amplitudes) - 1):
+            self.amplitudes[i] = self.amplitudes[i + 1]
+            self.frequencies[i] = self.frequencies[i + 1]
+            
+            currItemText = self.signalComposerCompoBox.itemText(i + 1)
+            modifiedText = currItemText[ : 7] + f"{i + 1}" + currItemText[8 : ]
+            self.signalComposerCompoBox.setItemText(i, modifiedText)
+
+        self.signalComposerCompoBox.removeItem(len(self.amplitudes) - 1)
+        self.amplitudes.pop()
+        self.frequencies.pop()
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);
