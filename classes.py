@@ -285,26 +285,35 @@ class DifferenceGraph(pg.PlotWidget):
         self.plot(self.originalSignal_time, self.differenceSignal_values, pen = 'y') # plotting the difference between original and reconstructed signals at the same time values (time values of the original signal).
 
 class FreqSignalGraph(pg.PlotWidget):
-    def __init__(self, parent=None):
+    def __init__(self, frequenciesOfInterest, parent=None):
         super().__init__(parent)
-        self.ShowSignalFreqDomain(OriginalSignalGraph())
-
-    def ShowSignalFreqDomain(self, originalSignal_instance):
-        
+        self.ShowSignalFreqDomain(frequenciesOfInterest, OriginalSignalGraph())
+    
+    
+    def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
         """
         Params:
         originalSignal_instance: already made instance of the OriginalSignalGraph to plot the corresponding signal in the frequency domain graph.
-        
         """
         self.clear()
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
-        self.f_sampling = originalSignal_instance.f_sampling  # samples per second
+        self.f_sampling = 2 * originalSignal_instance.f_sampling  # Samples per second
         
         # Frequency domain
-        fft_values = np.fft.fft(self.originalSignal_values)           # apply FFT (contains complex values representing the amplitude and phase info)
-        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / self.f_sampling)  # frequency bins
-        fft_magnitude = np.abs(fft_values) / len(self.originalSignal_values)  # magnitude (normalized) (extracting the magnitude from the complex values)
+        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / self.f_sampling)  # Frequency bins
         
-        self.plot(fft_freqs, fft_magnitude, pen = 'b')
+        # Only plot the positive frequencies
+        positive_freqs = fft_freqs[:len(fft_freqs) // 2]
+        impulse_magnitude = np.zeros_like(positive_freqs)
+        
+        for freq in frequenciesOfInterest:
+            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            if impulse_index.size > 0:
+                impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+
+        # Plotting the frequency domain representation
+        self.setXRange(0, 11)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin=0, xMax=11, yMin=-0.02, yMax=0.3)
+        self.plot(positive_freqs, impulse_magnitude, pen='b')

@@ -622,7 +622,7 @@ class Ui_Sampler(QMainWindow):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.frequencyDomainPlot = cl.FreqSignalGraph(self.centralwidget)
+        self.frequencyDomainPlot = cl.FreqSignalGraph([5], self.centralwidget)
         self.frequencyDomainPlot.setObjectName(u"frequencyDomainPlot")
         sizePolicy3.setHeightForWidth(self.frequencyDomainPlot.sizePolicy().hasHeightForWidth())
         self.frequencyDomainPlot.setSizePolicy(sizePolicy3)
