@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
 
 from pyqtgraph import PlotWidget
 
-class Ui_MainWindow(object):
+class Ui_Sampler(QMainWindow):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")

@@ -51,6 +51,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.addSignalComposerButton.clicked.connect(self.addSignal)
         self.removeSignalButton.clicked.connect(self.removeSignal)
+
+        self.generateTestButton.clicked.connect(self.run_testing_senarios)
         
     def browseSignal(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -94,7 +96,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             result = mix.generate_mixed_signal("test2")
         else:
             result = mix.generate_mixed_signal("test3")
-        self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
+        self.originalSignalPlot.ShowSampledSignal(result)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
