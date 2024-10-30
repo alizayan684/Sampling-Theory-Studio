@@ -688,7 +688,7 @@ class Ui_Sampler(QMainWindow):
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Construction Method", None))
 
-        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Whittaker Shannon", None))
+        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"whittaker shannon", None))
         self.constructMethodComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Fourier Series", None))
         self.constructMethodComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Polynomial Interpolation", None))
         self.constructMethodComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Spline Interpolation", None))

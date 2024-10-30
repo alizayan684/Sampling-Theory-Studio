@@ -53,6 +53,13 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.removeSignalButton.clicked.connect(self.removeSignal)
 
         self.generateTestButton.clicked.connect(self.run_testing_senarios)
+        self.constructMethodComboBox.currentIndexChanged.connect(self.changeConstruction)
+        
+    def changeConstruction(self):
+        currMethod = self.constructMethodComboBox.currentText()
+        self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = currMethod)
+        self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+        
         
     def browseSignal(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
