@@ -14,13 +14,15 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.yLimit = max(self.originalSignal_values)
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
         self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
-        self.ShowSampledSignal(self.originalSignal_values, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.originalSignal_time) # showing default signal when openning the application
+        self.noise = 0
+        self.ShowSampledSignal(self.originalSignal_values, self.noise, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.originalSignal_time) # showing default signal when openning the application
         
     # showing sampled signal in the graph    
-    def ShowSampledSignal(self, originalSignal, signalFreq, yLimit, f_sampling, samples_values, originalSignal_time = None): 
+    def ShowSampledSignal(self, originalSignal, noise, signalFreq, yLimit, f_sampling, samples_values, originalSignal_time = None): 
         # I pass the "originalSignal_time" as it will be needed for the default signal that occurs when starting the application and also to keep  the same signal time when changing the slider
         self.clear()
         self.originalSignal_values = originalSignal
+        self.noise = noise
         self.signalFreq = signalFreq
         self.yLimit = yLimit
         self.f_sampling = f_sampling
@@ -31,7 +33,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.yLimit = max(self.originalSignal_values)
         self.setYRange(-self.yLimit, self.yLimit)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
-        self.plot(self.originalSignal_time, self.originalSignal_values, pen = 'r')
+        self.plot(self.originalSignal_time, self.originalSignal_values + self.noise, pen = 'r')
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
         self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
 
@@ -116,7 +118,7 @@ class DifferenceGraph(pg.PlotWidget):
         
         # setting up needed some instance variables needed for calculating and plotting the difference signal.
         self.originalSignal_time = originalGraph_instance.originalSignal_time  
-        self.originalSignal_values = originalGraph_instance.originalSignal_values  
+        self.originalSignal_values = originalGraph_instance.originalSignal_values + originalGraph_instance.noise
         self.reconstructedSignal_values_correspondOriginalTime = reconstructedGraph_instance.reconstructedSignal_values_correspondOriginalTime  
         self.differenceSignal_values = self.originalSignal_values - self.reconstructedSignal_values_correspondOriginalTime 
         #print(self.differenceSignal_values) # for checking the difference between both signals in the terminal
