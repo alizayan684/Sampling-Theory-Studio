@@ -3,7 +3,7 @@ from main_ui import Ui_Sampler
 from PySide6 import QtWidgets
 import pyqtgraph as pg
 import pandas as pd
-
+from mixing_senarios import MixingScenarios
 
 
 
@@ -55,7 +55,27 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+    
+    #############################################################################################################
+    def run_testing_senarios(self):
+        current = self.testComboBox.currentIndex()
+        if current == 0:
+            return
+        
+        mix = MixingScenarios()
+        result = None
+        if current == 1:
+            result = mix.generate_mixed_signal("test1")
+        elif current == 2:
+            result = mix.generate_mixed_signal("test2")
+        else:
+            result = mix.generate_mixed_signal("test3")
+        self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
+        self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+        self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
             
+        
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);
