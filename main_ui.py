@@ -289,14 +289,38 @@ class Ui_Sampler(QMainWindow):
 
         self.verticalLayout_4.addWidget(self.clearAllButton)
 
-        self.line_2 = QFrame(self.widget)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setStyleSheet(u"background-color: rgb(0, 0, 0);")
-        self.line_2.setFrameShape(QFrame.Shape.HLine)
-        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+        
+        self.label_19 = QLabel(self.widget)
+        self.label_19.setObjectName(u"label_19")
+        sizePolicy.setHeightForWidth(self.label_19.sizePolicy().hasHeightForWidth())
+        self.label_19.setSizePolicy(sizePolicy)
+        self.label_19.setMinimumSize(QSize(50, 0))
+        self.label_19.setMaximumSize(QSize(16777215, 100))
+        self.label_19.setStyleSheet(u"QLabel {\n"
+"    font-size: 15px;\n"
+"border: 2px solid;\n"
+"	border-color: rgb(0, 157, 255);\n"
+"}\n"
+"")
 
-        self.verticalLayout_4.addWidget(self.line_2)
+        self.verticalLayout_4.addWidget(self.label_19)
+        self.constructMethodComboBox = QComboBox(self.widget)
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.addItem("")
+        self.constructMethodComboBox.setObjectName(u"constructMethodComboBox")
+        sizePolicy.setHeightForWidth(self.constructMethodComboBox.sizePolicy().hasHeightForWidth())
+        self.constructMethodComboBox.setSizePolicy(sizePolicy)
+        self.constructMethodComboBox.setMinimumSize(QSize(203, 30))
+        self.constructMethodComboBox.setMaximumSize(QSize(51000, 200))
+        self.constructMethodComboBox.setStyleSheet(u" font-size: 16px; /* Font size */\n"
+"    padding: 2px; /* Padding around the text */\n"
+"    border: 2px solid ; /* Border color */\n"
+"    border-radius: 5px; /* Rounded corners */\n"
+"    font-family: \"Segoe UI\"")
 
+        self.verticalLayout_4.addWidget(self.constructMethodComboBox)
         self.label_15 = QLabel(self.widget)
         self.label_15.setObjectName(u"label_15")
         sizePolicy.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
@@ -662,6 +686,11 @@ class Ui_Sampler(QMainWindow):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Reconstructed Signal", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Construction Error", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Frequency Domain", None))
-    # retranslateUi
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Construction Method", None))
 
+        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Whittaker Shannon", None))
+        self.constructMethodComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Fourier Series", None))
+        self.constructMethodComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Polynomial Interpolation", None))
+        self.constructMethodComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Spline Interpolation", None))
+    # retranslateUi
 

@@ -4,7 +4,7 @@ import numpy as np
 class MixingScenarios:
     def __init__(self):
         self.signals = {}
-        self.time = np.linespace(0, 1, 1000)
+        self.time = np.linspace(0, 1, 1000)
         self.tests = {}
         self.generate_tests()
     

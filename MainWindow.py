@@ -4,6 +4,14 @@ from PySide6 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 import pandas as pd
+from mixing_senarios import MixingScenarios
+
+
+
+# here, we will define the methods and vars related for all the graphs (i.e: browse, clear, ....), not defined specially for one of the four graphs 
+    
+    
+        
 
 class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def __init__(self):
@@ -43,6 +51,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.addSignalComposerButton.clicked.connect(self.addSignal)
         self.removeSignalButton.clicked.connect(self.removeSignal)
+
+        self.generateTestButton.clicked.connect(self.run_testing_senarios)
         
     def browseSignal(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -71,6 +81,26 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
     
+    #############################################################################################################
+    def run_testing_senarios(self):
+        current = self.testComboBox.currentIndex()
+        if current == 0:
+            return
+        
+        mix = MixingScenarios()
+        result = None
+        if current == 1:
+            result = mix.generate_mixed_signal("test1")
+        elif current == 2:
+            result = mix.generate_mixed_signal("test2")
+        else:
+            result = mix.generate_mixed_signal("test3")
+        self.originalSignalPlot.ShowSampledSignal(result)
+        self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+        self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+            
+        
     def setNoise(self):
         self.signalToNoiseLCD.display(self.signalToNoiseSlider.value())
         currSignalValues = self.originalSignalPlot.originalSignal_values
