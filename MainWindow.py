@@ -10,7 +10,7 @@ import pandas as pd
 # here, we will define the methods and vars related for all the graphs (i.e: browse, clear, ....), not defined specially for one of the four graphs 
     
     
-        
+    #  ReconstructedSignalGraph   
 
 class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def __init__(self):
