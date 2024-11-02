@@ -157,7 +157,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         else:
             self.run_testing_senarios()
     #############################################################################################################
-    def run_testing_senarios(self):
+++    def run_testing_senarios(self):
         current = self.testComboBox.currentIndex()
         if current == 0:
             return
@@ -251,7 +251,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
-        
+         
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
         self.setSamplingSliderValue()
