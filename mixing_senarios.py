@@ -12,9 +12,9 @@ class MixingScenarios:
 
     def generate_tests(self):
         """ This function will generate the tests that will be used for the simulation"""
-        self.tests['test1'] = {'signal1': [2, 0], 'signal2': [6, 0], 'fmax': 6}
-        self.tests['test2'] = {'signal1': [11, 0], 'signal2': [12, 0], 'signal3': [10, 0], 'fmax': 12}
-        self.tests['test3'] = {'signal1': [1, 0], 'signal2': [10, 0], 'signal3': [30, 0], 'signal4': [20, 0], 'fmax': 30}
+        self.tests['test1'] = {'signal1': [2, 10], 'signal2': [6, 30], 'fmax': 6}
+        self.tests['test2'] = {'signal1': [11, 0], 'signal2': [12, 0], 'fmax': 12}
+        self.tests['test3'] = {'signal1': [1, 0], 'signal2': [20, 0],  'fmax': 20}
 
     def generate_signal(self, signal_name, signal_params:list):
         """
@@ -23,7 +23,7 @@ class MixingScenarios:
         signal_params: list: The parameters of the signal [frequency, phase]
         
         """
-        self.signals[signal_name] = np.sin(2*np.pi*signal_params[0]*self.time)
+        self.signals[signal_name] = np.sin(2*np.pi*signal_params[0]*self.time + signal_params[1])
     
     def generate_sample(self, signal_name, signal_params:list, time):
         """
@@ -32,7 +32,7 @@ class MixingScenarios:
         signal_params: list: The parameters of the signal [frequency, phase]
         
         """
-        self.samples[signal_name] = np.sin(2*np.pi*signal_params[0]*time)
+        self.samples[signal_name] = np.sin(2*np.pi*signal_params[0]*time + signal_params[1])
     
     def mix_signals(self):
         """ this function will mix all the signals that have been generated""" 

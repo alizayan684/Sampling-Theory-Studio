@@ -5,9 +5,7 @@ import pyqtgraph as pg
 import numpy as np
 import pandas as pd
 from mixing_senarios import MixingScenarios
-
-
-
+from classes import OriginalSignalGraph
 # here, we will define the methods and vars related for all the graphs (i.e: browse, clear, ....), not defined specially for one of the four graphs 
     
     
@@ -153,7 +151,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.originalSignalPlot.ShowSampledSignal(originalSignal= self.originalSignalPlot.originalSignal_values, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= self.originalSignalPlot.signalFreq, yLimit= self.originalSignalPlot.yLimit, f_sampling= self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise , originalSignal_time= self.originalSignalPlot.originalSignal_time)
             self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
             self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-            self.frequencyDomainPlot.ShowSignalFreqDomain(self.originalSignalPlot)
+            self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
         else:
             self.run_testing_senarios()
     #############################################################################################################
@@ -181,7 +179,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
-            
         
     def setNoise(self):
         self.signalToNoiseLCD.display(self.signalToNoiseSlider.value())
@@ -266,8 +263,20 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     
     def updateOriginalSignal(self):
         if self.testComboBox.currentIndex() == 0:
-            self.originalSignalPlot.originalSignal_time = np.linspace(0, self.originalSignalPlot.duration, 1000)
-            self.originalSignalPlot.originalSignal_values = np.sin(2 * np.pi * self.originalSignalPlot.signalFreq * self.originalSignalPlot.originalSignal_time)  # initialization of the graph's original signal values
+            self.originalSignalPlot.signalFreq = 5
+            self.originalSignalPlot.f_sampling = 4 * self.originalSignalPlot.signalFreq
+            self.originalSignalPlot.duration = 1 
+            self.originalSignalPlot.originalSignal_time =  np.linspace(0, self.originalSignalPlot.duration,  1000)
+            self.originalSignalPlot.originalSignal_values = np.sin(2 * np.pi * self.originalSignalPlot.signalFreq * self.originalSignalPlot.originalSignal_time)
+            self.originalSignalPlot.yLimit = max(self.originalSignalPlot.originalSignal_values)
+            self.originalSignalPlot.samples_time = np.arange(0, self.originalSignalPlot.duration, step= 1/self.originalSignalPlot.f_sampling) 
+            self.originalSignalPlot.samples_values = np.sin(2 * np.pi * self.originalSignalPlot.signalFreq * self.originalSignalPlot.samples_time)
+            self.originalSignalPlot.signalNoise = 0
+            self.originalSignalPlot.sampleNoise = 0
+            self.originalSignalPlot.ShowSampledSignal(self.originalSignalPlot.originalSignal_values, self.originalSignalPlot.signalNoise, self.originalSignalPlot.signalFreq, self.originalSignalPlot.yLimit, self.originalSignalPlot.f_sampling, self.originalSignalPlot.samples_values, self.originalSignalPlot.sampleNoise, self.originalSignalPlot.originalSignal_time) # showing default signal when openning the application)
+            self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+            self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+            self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
 
         
         
