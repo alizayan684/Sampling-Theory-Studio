@@ -303,11 +303,17 @@ class FreqSignalGraph(pg.PlotWidget):
         self.f_max =  originalSignal_instance.signalFreq
         
         aliasedFrequencies = []
+        negativeFrequencies = [-freq for freq in frequenciesOfInterest] # forming the negative frequencies
+        frequenciesOfInterest += negativeFrequencies  # appending the negative frequencies to the frequencies of interest array
         
         for i in range (len(frequenciesOfInterest)):
-            if frequenciesOfInterest[i] > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
-                n = int(max(self.f_sampling, frequenciesOfInterest[i]) / min(self.f_sampling, frequenciesOfInterest[i]))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
-                aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
+            if np.abs(frequenciesOfInterest[i]) > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
+                n = int(max(self.f_sampling, np.abs(frequenciesOfInterest[i])) / min(self.f_sampling, np.abs(frequenciesOfInterest[i])))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
+                
+                if frequenciesOfInterest[i] >= 0: # check whether the freq is +ve or -ve to adjust the aliasing formula
+                    aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
+                else:
+                    aliased_freq = - np.abs( np.abs(frequenciesOfInterest[i]) - n * self.f_sampling)
                 # Add the aliased frequency to the aliased frequencies list
                 aliasedFrequencies.append(aliased_freq)
                 
@@ -319,17 +325,17 @@ class FreqSignalGraph(pg.PlotWidget):
         fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
         
         # Only plot the positive frequencies
-        positive_freqs = fft_freqs[:len(fft_freqs) // 2]
-        impulse_magnitude = np.zeros_like(positive_freqs)
+        #positive_freqs = fft_freqs[:len(fft_freqs) // 2]
+        impulse_magnitude = np.zeros_like(fft_freqs)
         
         for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
             if impulse_index.size > 0:
                 impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                 
         #if self.f_sampling < 2 * self.f_max:
         for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
             if impulse_index.size > 0:
                 impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                     
@@ -341,6 +347,6 @@ class FreqSignalGraph(pg.PlotWidget):
                 color = 'r' 
 
         # Plotting the frequency domain representation
-        self.setXRange(0, 11)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin=0, xMax=11, yMin=-0.02, yMax=0.3)
-        self.plot(positive_freqs, impulse_magnitude, pen = 'b')
+        self.setXRange(-11, 11)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin=-11, xMax=11, yMin=-0.02, yMax=0.3)
+        self.plot(fft_freqs, impulse_magnitude, pen = 'b')
