@@ -1,1 +1,1 @@
-Fourier Series
+ShowSignalFreqDomain

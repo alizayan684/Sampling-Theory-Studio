@@ -292,6 +292,7 @@ class FreqSignalGraph(pg.PlotWidget):
     def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
         """
         Params:
+        frequenciesOfInterest: all frequencies in the mix of signals I plot. note: it's passed by copy not by reference.
         originalSignal_instance: already made instance of the OriginalSignalGraph to plot the corresponding signal in the frequency domain graph.
         """
         self.clear()
@@ -303,12 +304,17 @@ class FreqSignalGraph(pg.PlotWidget):
         
         aliasedFrequencies = []
         
-        for freq in frequenciesOfInterest:
-            if freq > (self.f_sampling / 2):
-                aliased_freq = self.f_sampling - freq
-                # Add the aliased frequency to the original frequencies list
+        for i in range (len(frequenciesOfInterest)):
+            if frequenciesOfInterest[i] > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
+                n = int(max(self.f_sampling, frequenciesOfInterest[i]) / min(self.f_sampling, frequenciesOfInterest[i]))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
+                aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
+                # Add the aliased frequency to the aliased frequencies list
                 aliasedFrequencies.append(aliased_freq)
-
+                
+                # replace this out of nyquist range frequency with its corresponding aliasing frequency
+                frequenciesOfInterest[i] = aliased_freq  
+                #print(frequenciesOfInterest)
+                
         # Frequency domain
         fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
         
@@ -321,20 +327,20 @@ class FreqSignalGraph(pg.PlotWidget):
             if impulse_index.size > 0:
                 impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                 
-        if self.f_sampling < 2 * self.f_max:
-            for freq in aliasedFrequencies:
-                impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
-                if impulse_index.size > 0:
-                    impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+        #if self.f_sampling < 2 * self.f_max:
+        for freq in frequenciesOfInterest:
+            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            if impulse_index.size > 0:
+                impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                     
         if impulse_index.size > 0:
             # Choose color based on frequency
             if freq <= (self.f_sampling / 2):
                 color = 'g'  # Green for frequencies <= Nyquist
             else:
-                    color = 'r' 
+                color = 'r' 
 
         # Plotting the frequency domain representation
         self.setXRange(0, 11)  # Set x-axis range from 0 to 11
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=11, yMin=-0.02, yMax=0.3)
-        self.plot(positive_freqs, impulse_magnitude, pen='b')
+        self.plot(positive_freqs, impulse_magnitude, pen = 'b')
