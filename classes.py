@@ -3,6 +3,7 @@ import pyqtgraph as pg
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.interpolate import CubicSpline
+from scipy.interpolate import Akima1DInterpolator
 
 class OriginalSignalGraph(pg.PlotWidget):
     def __init__(self, parent = None):
@@ -53,7 +54,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
         self.reconstructedSignal_time = OriginalSignalGraph().samples_time
         self.reconstructedSignal_values = OriginalSignalGraph().samples_values + OriginalSignalGraph().sampleNoise
         self.reconstructionMethod = 'whittaker shannon' # initializing the reconstruction method to be whittaker shannon method.
-        # self.reconstructionMethod = ['whittaker shannon','Fourier Series' , 'Polynomial Interpolation','Spline Interpolation']
+        # self.reconstructionMethod = ['whittaker shannon','Fourier Series' , 'Akima Interpolation','Rectangular Interpolation']
         self.ReconstructSampledSignal(OriginalSignalGraph(), self.reconstructionMethod)
 
     # reconstruction signal method  
@@ -91,26 +92,26 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
         
-        elif self.reconstructionMethod == 'Polynomial Interpolation':
+        elif self.reconstructionMethod == 'Akima Interpolation':
             # taking data needed for the Polynomial Interpolation construction from the OriginalGraph instance.
             self.originalSignal_time = originalGraph_instance.originalSignal_time
             self.reconstructedSignal_time = originalGraph_instance.samples_time
             self.reconstructedSignal_values = originalGraph_instance.samples_values
 
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the Polynomial Interpolation formula)
-            self.reconstructedSignal_values_correspondOriginalTime = self.polynomial_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
+            self.reconstructedSignal_values_correspondOriginalTime = self.akima_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
 
-        elif self.reconstructionMethod == 'Spline Interpolation':
+        elif self.reconstructionMethod == 'Rectangular Interpolation':
             # taking data needed for the Spline Interpolation construction from the OriginalGraph instance.
             self.originalSignal_time = originalGraph_instance.originalSignal_time
             self.reconstructedSignal_time = originalGraph_instance.samples_time
             self.reconstructedSignal_values = originalGraph_instance.samples_values
 
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the Spline Interpolation formula)
-            self.reconstructedSignal_values_correspondOriginalTime = self.spline_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
+            self.reconstructedSignal_values_correspondOriginalTime = self.rectangular_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
@@ -119,65 +120,8 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             
 
     
-    # reconstructing using Fourier Series formula
-    def fourier_series(self, t, t_samples, samples):
-        """
-        Fourier Series interpolation for signal reconstruction.
-        
-        Params:
-        t : array-like
-            The time points at which to reconstruct the signal.
-        t_samples : array-like
-            The sample time points.
-        samples : array-like
-            The signal values at the sample points.
-            
-        Returns:
-        np.array : The reconstructed signal values at the specified time points t.
-        """
-        T = 1 / self.f_sampling
-        reconstructed_signal = np.zeros_like(t)
-        for i in range(len(t_samples)):
-            reconstructed_signal += samples[i] * np.sinc((t - t_samples[i]) / T)
-        return reconstructed_signal
- 
-    # def fourier_series(self, t, t_samples, samples, num_terms=10):
-    #     """
-    #     Reconstructs a signal using the Fourier series.
 
-    #     Parameters:
-    #     - t : array-like
-    #         The points in time at which to evaluate the reconstructed signal.
-    #     - t_samples : array-like
-    #         Sample times of the original signal.
-    #     - samples : array-like
-    #         Amplitude values of the original signal at each sample time.
-    #     - num_terms : int
-    #         Number of Fourier terms (harmonics) to include in the reconstruction.
 
-    #     Returns:
-    #     - reconstructed_signal : array-like
-    #         The reconstructed signal evaluated at points t.
-    #     """
-
-    #     # Calculate the period of the signal from t_samples (assuming it is periodic)
-    #     T = t_samples[-1] - t_samples[0]
-    #     f0 = 1 / T  # Fundamental frequency
-
-    #     # Compute the Fourier coefficients a_0, a_k, b_k
-    #     a_0 = (2 / len(t_samples)) * np.sum(samples)  # DC component
-    #     reconstructed_signal = a_0 / 2  # Initialize with half the DC component
-
-    #     # Loop over the number of terms (harmonics) to calculate a_k and b_k
-    #     for k in range(1, num_terms + 1):
-    #         # Cosine and sine terms
-    #         a_k = (2 / len(t_samples)) * np.sum(samples * np.cos(2 * np.pi * k * f0 * t_samples))
-    #         b_k = (2 / len(t_samples)) * np.sum(samples * np.sin(2 * np.pi * k * f0 * t_samples))
-
-    #         # Add the k-th term to the reconstructed signal
-    #         reconstructed_signal += a_k * np.cos(2 * np.pi * k * f0 * t) + b_k * np.sin(2 * np.pi * k * f0 * t)
-
-    #     return reconstructed_signal
     
     # reconstructing using Whittaker Shannon formula
     def whittaker_shannon(self,t, t_samples, samples):
@@ -210,10 +154,10 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             reconstructed_signal[i] = np.sum(sinc_terms)
 
         return reconstructed_signal
-    # reconstructing using Polynomial Interpolation formula
-    def polynomial_interpolation(self, t, t_samples, samples):
+    # reconstructing using Akima Interpolation formula
+    def akima_interpolation(self, t, t_samples, samples):
         """
-        Polynomial interpolation for signal reconstruction.
+        Akima interpolation for signal reconstruction.
         
         Params:
         t : array-like
@@ -226,15 +170,37 @@ class ReconstructedSignalGraph(pg.PlotWidget):
         Returns:
         np.array : The reconstructed signal values at the specified time points t.
         """
-        # Use numpy's polyfit and polyval for polynomial interpolation
-        coefficients = np.polyfit(t_samples, samples, deg=len(t_samples) - 1)
-        reconstructed_signal = np.polyval(coefficients, t)
+        # Use scipy's Akima1DInterpolator for Akima interpolation
+        akima_interp = Akima1DInterpolator(t_samples, samples)
+        reconstructed_signal = akima_interp(t)
         
         return reconstructed_signal
-    
-    # reconstructing using Spline Interpolation formula
-    def spline_interpolation(self, t, t_samples, samples):
+    # reconstructing using Fourier Series formula
+    def fourier_series(self, t, t_samples, samples):
+        """
+        Fourier Series interpolation for signal reconstruction.
+        
+        Params:
+        t : array-like
+            The time points at which to reconstruct the signal.
+        t_samples : array-like
+            The sample time points.
+        samples : array-like
+            The signal values at the sample points.
+            
+        Returns:
+        np.array : The reconstructed signal values at the specified time points t.
+        """
+        T = 1 / self.f_sampling
+        reconstructed_signal = np.zeros_like(t)
+        for i in range(len(t_samples)):
+            reconstructed_signal += samples[i] * np.sinc((t - t_samples[i]) / T)
+        return reconstructed_signal
+
+    # reconstructing using Rectangular Interpolation formula
+    def rectangular_interpolation(self, t, t_samples, samples):
         # def rectangular_interpolation(self, t, t_samples, samples):
+        # spline_interpolation
         """
         Reconstructs a signal using rectangular interpolation.
 
@@ -256,8 +222,9 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             closest_sample_index = np.argmin(np.abs(t_samples - t_val))
             reconstructed_signal[i] = samples[closest_sample_index]
         return reconstructed_signal
- 
- ###################################################################################################################################  
+
+###################################################################################################################################  
+    
     
 class DifferenceGraph(pg.PlotWidget):
     def __init__(self, parent = None):
@@ -304,11 +271,17 @@ class FreqSignalGraph(pg.PlotWidget):
         self.f_max =  originalSignal_instance.signalFreq
         
         aliasedFrequencies = []
+        negativeFrequencies = [-freq for freq in frequenciesOfInterest] # forming the negative frequencies
+        frequenciesOfInterest += negativeFrequencies  # appending the negative frequencies to the frequencies of interest array
         
         for i in range (len(frequenciesOfInterest)):
-            if frequenciesOfInterest[i] > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
-                n = int(max(self.f_sampling, frequenciesOfInterest[i]) / min(self.f_sampling, frequenciesOfInterest[i]))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
-                aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
+            if np.abs(frequenciesOfInterest[i]) > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
+                n = int(max(self.f_sampling, np.abs(frequenciesOfInterest[i])) / min(self.f_sampling, np.abs(frequenciesOfInterest[i])))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
+                
+                if frequenciesOfInterest[i] >= 0: # check whether the freq is +ve or -ve to adjust the aliasing formula
+                    aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
+                else:
+                    aliased_freq = - np.abs( np.abs(frequenciesOfInterest[i]) - n * self.f_sampling)
                 # Add the aliased frequency to the aliased frequencies list
                 aliasedFrequencies.append(aliased_freq)
                 
@@ -320,17 +293,17 @@ class FreqSignalGraph(pg.PlotWidget):
         fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
         
         # Only plot the positive frequencies
-        positive_freqs = fft_freqs[:len(fft_freqs) // 2]
-        impulse_magnitude = np.zeros_like(positive_freqs)
+        #positive_freqs = fft_freqs[:len(fft_freqs) // 2]
+        impulse_magnitude = np.zeros_like(fft_freqs)
         
         for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
             if impulse_index.size > 0:
                 impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                 
         #if self.f_sampling < 2 * self.f_max:
         for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(positive_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
+            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
             if impulse_index.size > 0:
                 impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                     
@@ -342,6 +315,6 @@ class FreqSignalGraph(pg.PlotWidget):
                 color = 'r' 
 
         # Plotting the frequency domain representation
-        self.setXRange(0, 11)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin=0, xMax=11, yMin=-0.02, yMax=0.3)
-        self.plot(positive_freqs, impulse_magnitude, pen = 'b')
+        self.setXRange(-11, 11)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin=-11, xMax=11, yMin=-0.02, yMax=0.3)
+        self.plot(fft_freqs, impulse_magnitude, pen = 'b')
