@@ -258,7 +258,6 @@ color: rgb(0, 0, 0);
 	background-color: rgb(255, 255, 255);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 17px;
-    padding: 5px;
     border: 1px solid #cccccc;
 	border-color: rgb(91, 91, 91);
     border-radius: 5px;

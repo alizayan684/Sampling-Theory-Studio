@@ -158,6 +158,12 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         else:
             result = mix.generate_mixed_signal("test3")
             test_name = 'test3'
+        frequencies = []
+        for signal_name , values in mix.tests[test_name].items():
+            if signal_name != 'fmax':
+                frequencies.append(values[0])
+        self.frequencies = frequencies
+
         mixed_sample_values  =  self.generate_samples_from_signals(mix.tests, test_name, mix)
         
         self.originalSignalPlot.clear()
@@ -188,7 +194,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def setFrequencySliderValue(self):
         self.freqComposerLCD.display(self.freqComposerSlider.value())
     
-    def addSignal(self):
+    def  addSignal(self):
         self.amplitudes.append(self.amplitudeComposerSlider.value())
         self.frequencies.append(self.freqComposerSlider.value())
         self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
@@ -266,6 +272,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.originalSignalPlot.ShowSampledSignal(self.originalSignalPlot.originalSignal_values, self.originalSignalPlot.signalNoise, self.originalSignalPlot.signalFreq, self.originalSignalPlot.yLimit, self.originalSignalPlot.f_sampling, self.originalSignalPlot.samples_values, self.originalSignalPlot.sampleNoise, self.originalSignalPlot.originalSignal_time) # showing default signal when openning the application)
             self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
             self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+            self.frequencies = [self.originalSignalPlot.signalFreq]
             self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
     
     def saveTest(self):
