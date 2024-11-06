@@ -5,14 +5,7 @@ import pyqtgraph as pg
 import numpy as np
 import pandas as pd
 from mixing_senarios import MixingScenarios
-
-
-
-# here, we will define the methods and vars related for all the graphs (i.e: browse, clear, ....), not defined specially for one of the four graphs 
-    
-    
         
-
 class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__();
@@ -80,14 +73,14 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.amplitudes.append(max(np.abs(self.browsedSignal)))
             self.frequencies.append(signalFreq)
             self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
-            originalSignalTime = np.linspace(0, len(self.browsedSignal) / self.originalSignalPlot.f_sampling, len(self.browsedSignal))
-            samplesTime = np.arange(0, originalSignalTime[-1], step=1/self.originalSignalPlot.f_sampling)
-            samplesValues = np.interp(samplesTime, originalSignalTime, self.browsedSignal)
+            #originalSignalTime = np.linspace(0, len(self.browsedSignal) / self.originalSignalPlot.f_sampling, len(self.browsedSignal))
+            #samplesTime = np.arange(0, originalSignalTime[-1], step=1/self.originalSignalPlot.f_sampling)
+            #samplesValues = np.interp(samplesTime, originalSignalTime, self.browsedSignal)
 
             currSignalValues = self.originalSignalPlot.originalSignal_values
             currSignalValues += self.browsedSignal
             currSampleValues = self.originalSignalPlot.samples_values
-            currSampleValues += samplesValues[:20]
+            #currSampleValues += samplesValues[:20]
             
 
             # Show the sampled signal
@@ -125,17 +118,17 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.plot(self.originalSignal_time, self.originalSignal_values + self.signalNoise, pen='r')
         self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
 
-    def browse_signal(self):
-        filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
-            parent=self, caption="Select a CSV file", dir="/D", filter="(*.csv)"
-        )
-        if filePath:
-            self.load_signal_from_csv(filePath)
-
-            self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
-            self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
-            self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-            self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)    
+   # def browse_signal(self):
+    #    filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
+     #       parent=self, caption="Select a CSV file", dir="/D", filter="(*.csv)"
+      #  )
+       # if filePath:
+        #    self.load_signal_from_csv(filePath)
+#
+ #           self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
+  #          self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+   #         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+    #        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)    
     
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
@@ -243,11 +236,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
         self.setSamplingSliderValue()
-        
-        
-        
-        
-        
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);

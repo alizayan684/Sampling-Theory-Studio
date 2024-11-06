@@ -14,7 +14,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
-        self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
+        self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values)
         self.signalNoise = 0
         self.sampleNoise = 0
         self.ShowSampledSignal(self.originalSignal_values, self.signalNoise, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.sampleNoise, self.originalSignal_time) # showing default signal when openning the application
@@ -28,7 +28,8 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.signalFreq = signalFreq
         # self.yLimit = yLimit
         self.f_sampling = f_sampling
-        self.samples_values = samples_values
+        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
+        self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values + self.signalNoise)
         self.sampleNoise = sampleNoise
         self.originalSignal_time = originalSignal_time
         # if self.originalSignal_time is None :
@@ -76,7 +77,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.reconstructedSignal_values_correspondOriginalTime = self.whittaker_shannon(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=1, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
-            self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime + self.sampleNoise, pen='g')        
+            self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')        
         
         elif self.reconstructionMethod == 'Fourier Series':
             # taking data needed for the Fourier Series construction from the OriginalGraph instance.
@@ -275,7 +276,7 @@ class DifferenceGraph(pg.PlotWidget):
         
         # setting up needed some instance variables needed for calculating and plotting the difference signal.
         self.originalSignal_time = originalGraph_instance.originalSignal_time  
-        self.originalSignal_values = originalGraph_instance.originalSignal_values + originalGraph_instance.signalNoise
+        self.originalSignal_values = originalGraph_instance.originalSignal_values
         self.reconstructedSignal_values_correspondOriginalTime = reconstructedGraph_instance.reconstructedSignal_values_correspondOriginalTime  
         self.differenceSignal_values = self.originalSignal_values - self.reconstructedSignal_values_correspondOriginalTime 
         #print(self.differenceSignal_values) # for checking the difference between both signals in the terminal
