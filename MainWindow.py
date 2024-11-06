@@ -1,3 +1,4 @@
+import re
 import sys
 from main_ui_final import Ui_Sampler
 from PySide6 import QtWidgets
@@ -46,7 +47,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.addSignalComposerButton.clicked.connect(self.addSignal)
         self.removeSignalButton.clicked.connect(self.removeSignal)
-
+        self.saveButton.clicked.connect(self.saveTest)
         self.generateTestButton.clicked.connect(self.run_testing_senarios)
         self.testComboBox.currentIndexChanged.connect(self.updateOriginalSignal)
         self.constructMethodComboBox.currentIndexChanged.connect(self.changeConstruction)
@@ -84,7 +85,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.originalSignalPlot.signalFreq, signalFreq), yLimit= yLimit, f_sampling= self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
             self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
             self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-            self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
+            self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
 
             self.amplitudeComposerSlider.setValue(1)
             self.freqComposerSlider.setValue(1)
@@ -164,7 +165,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.originalSignalPlot.ShowSampledSignal(result, self.originalSignalPlot.signalNoise,int(mix.tests[test_name]['fmax']), self.originalSignalPlot.yLimit, self.originalSignalPlot.f_sampling, mixed_sample_values, self.originalSignalPlot.sampleNoise, self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
         
     def setNoise(self):
         self.signalToNoiseLCD.display(self.signalToNoiseSlider.value())
@@ -179,7 +180,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= signalNoise, signalFreq= self.originalSignalPlot.signalFreq, yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= self.originalSignalPlot.samples_values, sampleNoise= sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
 
     def setAmplitudeSliderValue(self):
         self.amplitudeComposerLCD.display(self.amplitudeComposerSlider.value())
@@ -200,7 +201,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.originalSignalPlot.signalFreq, self.frequencies[-1]), yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
 
         self.amplitudeComposerSlider.setValue(1)
         self.freqComposerSlider.setValue(1)
@@ -236,7 +237,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.frequencies), yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies, self.originalSignalPlot)
+        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
         
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
@@ -266,6 +267,25 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
             self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
             self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
+    
+    def saveTest(self):
+        for index in range(self.removeSignalComboBox.count()): 
+            item_text = self.removeSignalComboBox.itemText(index)  
+            # Using regular expressions to extract amplitude and frequency 
+            match = re.search(r"Amp: (\d+)mV \| Freq: (\d+)HZ", item_text) 
+            if match: 
+                amplitude = match.group(1) 
+                frequency = match.group(2) 
+                # Saving the extracted values to a file
+                self.generate_signals_from_values(amplitude, frequency )
+                with open("test.txt", "a") as file: 
+                    file.write(f"Signal {index + 1} | Amplitude: {amplitude}mV | Frequency: {frequency}Hz\n")
+    def generate_signals_from_values(self, amp,freq ):
+
+        return amp * np.sin(2 * np.pi * freq * self.originalSignalPlot.originalSignal_time )
+
+
+
 
             
 if __name__ == '__main__':
