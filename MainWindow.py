@@ -60,28 +60,21 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         )
         if filePath:
             self.df = pd.read_csv(filePath, header=None)
-            self.browsedSignal = []
-            self.browsedSignal = self.df.to_numpy().flatten()
-            self.browsedSignal = self.browsedSignal[:1000]
+            browsedSignal = []
+            browsedSignal = self.df.to_numpy().flatten()
+            self.browsedSignal = browsedSignal[:1000]
         
-            currSignalTime = np.linspace(0, 1,  1000)
             yLimit = max(np.abs(self.browsedSignal))
             
-            # Calculate frequency using the zero-crossing method
-            signalFreq = self.calculate_frequency(self.browsedSignal)
+            signalFreq = self.calculate_frequency(self.browsedSignal, yLimit - 0.3)
             
-            self.amplitudes.append(max(np.abs(self.browsedSignal)))
+            self.amplitudes.append(yLimit)
             self.frequencies.append(signalFreq)
-            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
-            #originalSignalTime = np.linspace(0, len(self.browsedSignal) / self.originalSignalPlot.f_sampling, len(self.browsedSignal))
-            #samplesTime = np.arange(0, originalSignalTime[-1], step=1/self.originalSignalPlot.f_sampling)
-            #samplesValues = np.interp(samplesTime, originalSignalTime, self.browsedSignal)
+            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ")
 
             currSignalValues = self.originalSignalPlot.originalSignal_values
             currSignalValues += self.browsedSignal
-            currSampleValues = self.originalSignalPlot.samples_values
-            #currSampleValues += samplesValues[:20]
-            
+            currSampleValues = self.originalSignalPlot.samples_values            
 
             # Show the sampled signal
             self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.originalSignalPlot.signalFreq, signalFreq), yLimit= yLimit, f_sampling= self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
@@ -95,13 +88,20 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
             self.setSamplingSliderValue()
 
-    def calculate_frequency(self, signal):
-        """Estimate frequency using the zero-crossing method."""
-        zero_crossings = np.where(np.diff(np.sign(signal)))[0]
-        num_crossings = len(zero_crossings)
-        duration = len(signal) / self.originalSignalPlot.f_sampling  # total duration in seconds
-        frequency = num_crossings / (2 * duration)  # divide by 2 for actual frequency
-        return frequency
+    def calculate_frequency(self, signal, threshold):
+        peaks = []
+        for i in range(len(signal)):
+            if i > 0 and i < len(signal) - 1:
+                if signal[i] > signal[i - 1] and signal[i] > signal[i + 1] and signal[i] > threshold:
+                    peaks.append(i)
+
+        currSignalTime = np.linspace(0, 1,  1000)
+        cycleTimes = []
+        for i in range(len(peaks) - 1, 0, -1):
+            cycleTimes.append(currSignalTime[peaks[i]] - currSignalTime[peaks[i - 1]])
+        
+        periodicTime = np.average(cycleTimes)
+        return 1 / periodicTime
 
     def ShowSampledSignal(self, originalSignal, signalNoise, signalFreq, yLimit, f_sampling, samples_values, sampleNoise, originalSignal_time=None):
         self.clear()
@@ -116,19 +116,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.originalSignal_values + self.signalNoise, pen='r')
-        self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
-
-   # def browse_signal(self):
-    #    filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
-     #       parent=self, caption="Select a CSV file", dir="/D", filter="(*.csv)"
-      #  )
-       # if filePath:
-        #    self.load_signal_from_csv(filePath)
-#
- #           self.originalSignalPlot.ShowSampledSignal(self.browsedSignal)
-  #          self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
-   #         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
-    #        self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)    
+        self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")   
     
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
