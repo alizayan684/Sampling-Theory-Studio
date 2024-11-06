@@ -11,8 +11,9 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.signalFreq = 5 # initializing frequency of the original signal (a default signal with freq = 5 Hz before browsing any signal) (cycles per second)
         self.f_sampling = 4 * self.signalFreq # initializing sampling frequency to sample the signal (samples per second)
         self.duration = 1  # duration of the signal
+        self.phaseShift = np.radians(0)
         self.originalSignal_time =  np.linspace(0, self.duration,  1000) # initializing x values of the original signal(time domain)
-        self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time)  # initialization of the graph's original signal values
+        self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time + self.phaseShift)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
         self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values)

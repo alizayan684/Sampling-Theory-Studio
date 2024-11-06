@@ -1,1 +1,1 @@
-ShowSignalFreqDomain
+phaseComposerSlider

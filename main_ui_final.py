@@ -959,7 +959,7 @@ class Ui_Sampler(QMainWindow):
         self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add Component", None))
         self.saveButton.setText(QCoreApplication.translate("MainWindow", u"Save to PC", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"Components", None))
-        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"ALL", None))
+        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp : 1mV | Freq : 5Hz", None))
 
         self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Scenarios", None))
