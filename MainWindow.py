@@ -13,6 +13,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.amplitudes = [1]
         self.frequencies = [5]
+        self.browsedSignals = dict()
         
         # setting up sampling slider values
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
@@ -71,6 +72,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.amplitudes.append(yLimit)
             self.frequencies.append(signalFreq)
             self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ")
+            self.browsedSignals[self.removeSignalComboBox.count() - 1] = self.browsedSignal
 
             currSignalValues = self.originalSignalPlot.originalSignal_values
             currSignalValues += self.browsedSignal
@@ -200,9 +202,12 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         
         idxRemoved = self.removeSignalComboBox.currentIndex()
         currSignalValues = self.originalSignalPlot.originalSignal_values
-        currSignalValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time)
+        if idxRemoved in self.browsedSignals:
+            currSignalValues -= self.browsedSignals[idxRemoved]
+            self.browsedSignals.pop(idxRemoved)
+        else:
+            currSignalValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time)
         currSampleValues = self.originalSignalPlot.samples_values
-        currSampleValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.samples_time)
         
         for i in range(idxRemoved, len(self.amplitudes) - 1):
             self.amplitudes[i] = self.amplitudes[i + 1]
