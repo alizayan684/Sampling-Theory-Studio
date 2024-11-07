@@ -1,13 +1,13 @@
 import re
 import sys
-from main_ui_final import Ui_Sampler
+from main_ui_finished import Ui_Sampler
 from PySide6 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 import pandas as pd
 from mixing_senarios import MixingScenarios
 from classes import OriginalSignalGraph
-        
+from reportlab.pdfgen import canvas        
 class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__();
@@ -21,14 +21,14 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSlider.setValue(self.originalSignalPlot.f_sampling)    # inital value
-        self.samplingFreqSliderFmax.setMinimum(0)
-        self.samplingFreqSliderFmax.setMaximum(7)   
-        self.samplingFreqSliderFmax.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))    
+        self.samplingFreqSlider_2.setMinimum(0)
+        self.samplingFreqSlider_2.setMaximum(7)   
+        self.samplingFreqSlider_2.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))    
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
         
         self.samplingFreqSlider.valueChanged.connect(self.setSamplingSliderValue)
-        self.samplingFreqSliderFmax.valueChanged.connect(self.setSamplingSliderValue)
+        self.samplingFreqSlider_2.valueChanged.connect(self.setSamplingSliderValue)
         self.browseSignalButton.clicked.connect(self.browseSignal)
 
         self.signalToNoiseSlider.setMinimum(1)
@@ -102,8 +102,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.freqComposerSlider.setValue(1)
             self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
             self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
-            self.samplingFreqSliderFmax.setMinimum(0)  # min value
-            self.samplingFreqSliderFmax.setMaximum(7)   # max value
+            self.samplingFreqSlider_2.setMinimum(0)  # min value
+            self.samplingFreqSlider_2.setMaximum(7)   # max value
             self.setSamplingSliderValue()
 
     def calculate_frequency(self, signal, threshold):
@@ -138,8 +138,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
-        #self.originalSignalPlot.f_sampling = self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq
-        self.samplingFreqSliderFmax.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
+        #self.originalSignalPlot.f_sampling = self.samplingFreqSlider_2.value() * self.originalSignalPlot.signalFreq
+        self.samplingFreqSlider_2.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
 
@@ -233,8 +233,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.phaseComposerSlider.setValue(0)
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
-        self.samplingFreqSliderFmax.setMinimum(0)  # min value
-        self.samplingFreqSliderFmax.setMaximum(7)   # max value
+        self.samplingFreqSlider_2.setMinimum(0)  # min value
+        self.samplingFreqSlider_2.setMaximum(7)   # max value
         self.setSamplingSliderValue()
     
     def removeSignal(self):
@@ -269,8 +269,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
-        self.samplingFreqSliderFmax.setMinimum(0)  # min value
-        self.samplingFreqSliderFmax.setMaximum(7)   # max value
+        self.samplingFreqSlider_2.setMinimum(0)  # min value
+        self.samplingFreqSlider_2.setMaximum(7)   # max value
         self.setSamplingSliderValue()
 
     def generate_samples_from_signals(self, tests,  test_name , mix: MixingScenarios):
@@ -300,20 +300,33 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
 
     def saveTest(self):
-        for index in range(self.removeSignalComboBox.count()): 
-            item_text = self.removeSignalComboBox.itemText(index)  
-            # Using regular expressions to extract amplitude and frequency 
-            match = re.search(r"Amp: (\d+)mV \| Freq: (\d+)HZ", item_text) 
-            if match: 
-                amplitude = match.group(1) 
-                frequency = match.group(2) 
-                # Saving the extracted values to a file
-                self.generate_signals_from_values(amplitude, frequency)
-                with open("test.txt", "a") as file: 
-                    file.write(f"Signal {index + 1} | Amplitude: {amplitude}mV | Frequency: {frequency}Hz\n")
-    def generate_signals_from_values(self, amp,freq ):
+        # creating a PDF file
+        c = canvas.Canvas("test.pdf")
+        # Setting the title of the PDF file
+        c.setTitle("Test Report")
+        # adding signal information to the PDF file
+        c.drawString(100, 800, "Signal Information")
+        c.drawString(100, 780, "Original Signal Frequency: " + str(self.originalSignalPlot.signalFreq) + "Hz")
+        c.drawString(100, 760, "Original Signal Sampling Frequency: " + str(self.originalSignalPlot.f_sampling) + "Hz")
+        c.drawString(100, 740, "Original Signal Amplitude: " + str(self.originalSignalPlot.yLimit) + "mV")
+        c.drawString(100, 720, "Original Signal Duration: " + str(self.originalSignalPlot.duration) + "s")
+        c.drawString(100, 700, "Original Signal Noise: " + str(self.signalToNoiseSlider.value()) + "dB")
+        c.drawString(100, 680, "Original Signal Samples: " + str(len(self.originalSignalPlot.samples_values)))
+        c.drawString(100, 660, "Original Signal Samples Time: " + str(self.originalSignalPlot.samples_time))
+        c.drawString(100, 640, "Original Signal Samples Values: " + str(self.originalSignalPlot.samples_values))
+        # closing the PDF file
+        c.save()
+        
 
-        return amp * np.sin(2 * np.pi * freq * self.originalSignalPlot.originalSignal_time )
+    # for index in range(self.removeSignalComboBox.count()): 
+    #         item_text = self.removeSignalComboBox.itemText(index)  
+    #         # Using regular expressions to extract amplitude and frequency 
+    #         match = re.search(r"Amp: (\d+)mV \| Freq: (\d+)HZ", item_text) 
+    #         if match: 
+    #             amplitude = match.group(1) 
+    #             frequency = match.group(2) 
+    #             # Saving the extracted values to a file
+    #             file.write(f"Signal {index + 1} | Amplitude: {amplitude}mV | Frequency: {frequency}Hz\n")
 
 
 
