@@ -85,6 +85,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             
             self.amplitudes.append(yLimit)
             self.frequencies.append(signalFreq)
+            self.phases.append(np.radians(0))
             self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ | Phase: 0 Deg")
             self.browsedSignals[self.removeSignalComboBox.count() - 1] = self.browsedSignal
 
@@ -104,7 +105,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
             self.samplingFreqSliderFmax.setMinimum(0)  # min value
             self.samplingFreqSliderFmax.setMaximum(7)   # max value
-            self.setSamplingSliderValue()
 
     def calculate_frequency(self, signal, threshold):
         peaks = []
@@ -138,7 +138,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
-        #self.originalSignalPlot.f_sampling = self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq
         self.samplingFreqSliderFmax.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
@@ -249,7 +248,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSliderFmax.setMinimum(0)  # min value
         self.samplingFreqSliderFmax.setMaximum(7)   # max value
-        self.setSamplingSliderValue()
     
     def removeSignal(self):
         if(len(self.amplitudes) == 1):
@@ -287,7 +285,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSliderFmax.setMinimum(0)  # min value
         self.samplingFreqSliderFmax.setMaximum(7)   # max value
-        self.setSamplingSliderValue()
 
     def generate_samples_from_signals(self, tests,  test_name , mix: MixingScenarios):
         
