@@ -959,7 +959,7 @@ class Ui_Sampler(QMainWindow):
         self.addSignalComposerButton.setText(QCoreApplication.translate("MainWindow", u"Add Component", None))
         self.saveButton.setText(QCoreApplication.translate("MainWindow", u"Save to PC", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"Components", None))
-        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp : 1mV | Freq : 5Hz", None))
+        self.removeSignalComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Signal 1 | Amp : 1mV | Freq : 5Hz | Phase: 0 Deg", None))
 
         self.removeSignalButton.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Scenarios", None))
@@ -971,7 +971,7 @@ class Ui_Sampler(QMainWindow):
         self.generateTestButton.setText(QCoreApplication.translate("MainWindow", u"Generate", None))
         self.label_20.setText(QCoreApplication.translate("MainWindow", u"Sampling", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Reconstruction Method", None))
-        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Whittaker Shannon", None))
+        self.constructMethodComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"whittaker shannon", None))
         self.constructMethodComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Rectangular Interpolation", None))
         self.constructMethodComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Akima Interpolation", None))
         self.constructMethodComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Fourier Series", None))
