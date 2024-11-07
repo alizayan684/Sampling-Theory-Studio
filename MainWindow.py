@@ -181,6 +181,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
     #############################################################################################################
     def run_testing_senarios(self):
+        if self.removeSignalComboBox.count() > 0:
+            self.removeSignalComboBox.clear()
         current = self.testComboBox.currentIndex()
         if current == 0:
             return
@@ -200,7 +202,16 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         for signal_name , values in mix.tests[test_name].items():
             if signal_name != 'fmax':
                 frequencies.append(values[0])
-        self.frequencies = frequencies
+        self.frequencies = []
+        self.frequencies.extend(frequencies)
+        self.amplitudes = []
+        self.amplitudes.append(1)
+        self.amplitudes.append(1)
+        self.phases = []
+        self.phases.append(mix.tests[test_name]['signal1'][-1])
+        self.phases.append(mix.tests[test_name]['signal2'][-1])
+        for _ in range(2):
+           self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {1}mV | Freq: {mix.tests[test_name][f'signal{_+1}'][0]}HZ | Phase: {mix.tests[test_name][f'signal{_+1}'][-1]} Deg")
 
         mixed_sample_values  =  self.generate_samples_from_signals(mix.tests, test_name, mix)
         
@@ -235,7 +246,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def setFrequencySliderValue(self):
         self.freqComposerLCD.display(self.freqComposerSlider.value())
     
-    def  addSignal(self):
+    def  addSignal(self):            
         self.amplitudes.append(self.amplitudeComposerSlider.value())
         self.frequencies.append(self.freqComposerSlider.value())
         self.phases.append(np.radians(self.phaseComposerSlider.value()))
@@ -322,6 +333,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
             self.frequencies = [self.originalSignalPlot.signalFreq]
             self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
+            self.removeSignalComboBox.addItem("Signal 1 | Amp : 1mV | Freq : 5Hz | Phase: 0 Deg")
+
 
     def saveTest(self):
         # creating a PDF file
