@@ -1028,9 +1028,9 @@ class Ui_Sampler(QMainWindow):
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Senarios", None))
         self.generateTestButton.setText(QCoreApplication.translate("MainWindow", u"Generate", None))
         self.testComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
-        self.testComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"Test 1", None))
-        self.testComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Test 2", None))
-        self.testComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"Test 3", None))
+        self.testComboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"[f:2, ph:10][f:6, ph:30]", None))
+        self.testComboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"[f:11, ph:0][f:12, ph:0]", None))
+        self.testComboBox.setItemText(3, QCoreApplication.translate("MainWindow", u"[f:1, ph:0][f:20, ph:0]", None))
 
         self.label_20.setText(QCoreApplication.translate("MainWindow", u"Sampling", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Reconstruction Method", None))
