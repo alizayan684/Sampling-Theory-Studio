@@ -29,7 +29,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
         
         self.samplingFreqSlider.valueChanged.connect(self.setSamplingSliderValue)
-        self.samplingFreqSlider_2.valueChanged.connect(self.setSamplingSliderValue)
+        self.samplingFreqSlider_2.valueChanged.connect(self.setFmaxSamplingSliderValue)
         self.browseSignalButton.clicked.connect(self.browseSignal)
 
         self.signalToNoiseSlider.setMinimum(1)
@@ -87,7 +87,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.amplitudes.append(yLimit)
             self.frequencies.append(signalFreq)
             self.phases.append(np.radians(0))
-            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ | Phase: 0 Deg")
+            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {round(signalFreq, 1)}HZ | Phase: 0 Deg")
             self.browsedSignals[self.removeSignalComboBox.count() - 1] = self.browsedSignal
 
             currSignalValues = self.originalSignalPlot.originalSignal_values
@@ -140,7 +140,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
-        #self.originalSignalPlot.f_sampling = self.samplingFreqSlider_2.value() * self.originalSignalPlot.signalFreq
         self.samplingFreqSlider_2.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
@@ -160,8 +159,8 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.run_testing_senarios()
 
     def setFmaxSamplingSliderValue(self):
-        self.originalSignalPlot.f_sampling = self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq
-        self.samplingFreqSlider.setValue(self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq)
+        self.originalSignalPlot.f_sampling = self.samplingFreqSlider_2.value() * self.originalSignalPlot.signalFreq
+        self.samplingFreqSlider.setValue(self.samplingFreqSlider_2.value() * self.originalSignalPlot.signalFreq)
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
 
