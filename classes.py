@@ -316,6 +316,6 @@ class FreqSignalGraph(pg.PlotWidget):
                 color = 'r' 
 
         # Plotting the frequency domain representation
-        self.setXRange(-11, 11)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin=-11, xMax=11, yMin=-0.02, yMax=0.3)
+        self.setXRange(-15, 15)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin=-15, xMax=15, yMin=-0.02, yMax=0.3)
         self.plot(fft_freqs, impulse_magnitude, pen = 'b')
