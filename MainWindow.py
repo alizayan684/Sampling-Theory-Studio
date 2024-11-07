@@ -14,6 +14,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
 
         self.amplitudes = [1]
         self.frequencies = [5]
+        self.phases = [np.radians(0)]
         self.browsedSignals = dict()
         
         # setting up sampling slider values
@@ -27,7 +28,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
         
         self.samplingFreqSlider.valueChanged.connect(self.setSamplingSliderValue)
-        self.samplingFreqSliderFmax.valueChanged.connect(self.setSamplingSliderValue)
+        self.samplingFreqSliderFmax.valueChanged.connect(self.setFmaxSamplingSliderValue)
         self.browseSignalButton.clicked.connect(self.browseSignal)
 
         self.signalToNoiseSlider.setMinimum(1)
@@ -84,7 +85,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             
             self.amplitudes.append(yLimit)
             self.frequencies.append(signalFreq)
-            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ")
+            self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {round(yLimit, 1)}mV | Freq: {signalFreq}HZ | Phase: 0 Deg")
             self.browsedSignals[self.removeSignalComboBox.count() - 1] = self.browsedSignal
 
             currSignalValues = self.originalSignalPlot.originalSignal_values
@@ -156,6 +157,26 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         else:
             self.run_testing_senarios()
 
+    def setFmaxSamplingSliderValue(self):
+        self.originalSignalPlot.f_sampling = self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq
+        self.samplingFreqSlider.setValue(self.samplingFreqSliderFmax.value() * self.originalSignalPlot.signalFreq)
+        self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
+        self.actualFreqLCD.display(self.samplingFreqSlider.value())
+
+        currSamplesTime = np.arange(0, self.originalSignalPlot.duration, step= 1/self.originalSignalPlot.f_sampling)
+        self.originalSignalPlot.samples_time = currSamplesTime
+        currSampleValues = 0
+        if self.testComboBox.currentIndex() == 0:
+            for i in range(len(self.amplitudes)):
+                currSampleValues += self.amplitudes[i] * np.sin(2 * np.pi * self.frequencies[i] * currSamplesTime)
+            
+            self.originalSignalPlot.ShowSampledSignal(originalSignal= self.originalSignalPlot.originalSignal_values, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= self.originalSignalPlot.signalFreq, yLimit= self.originalSignalPlot.yLimit, f_sampling= self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise , originalSignal_time= self.originalSignalPlot.originalSignal_time)
+            self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
+            self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
+            self.frequencyDomainPlot.ShowSignalFreqDomain( self.frequencies.copy(), self.originalSignalPlot)
+        else:
+            self.run_testing_senarios()
+
     #############################################################################################################
     def run_testing_senarios(self):
         current = self.testComboBox.currentIndex()
@@ -209,12 +230,12 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def addSignal(self):
         self.amplitudes.append(self.amplitudeComposerSlider.value())
         self.frequencies.append(self.freqComposerSlider.value())
-        self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ")
+        self.phases.append(np.radians(self.phaseComposerSlider.value()))
+        self.removeSignalComboBox.addItem(f"Signal {self.removeSignalComboBox.count() + 1} | Amp: {self.amplitudeComposerSlider.value()}mV | Freq: {self.freqComposerSlider.value()}HZ | Phase: {self.phaseComposerSlider.value()} Deg")
 
         currSignalValues = self.originalSignalPlot.originalSignal_values
-        currSignalValues += self.amplitudes[-1] * np.sin(2 * np.pi * self.frequencies[-1] * self.originalSignalPlot.originalSignal_time + np.radians(self.phaseComposerSlider.value()))
+        currSignalValues += self.amplitudes[-1] * np.sin(2 * np.pi * self.frequencies[-1] * self.originalSignalPlot.originalSignal_time + self.phases[-1])
         currSampleValues = self.originalSignalPlot.samples_values
-        #currSampleValues += self.amplitudes[-1] * np.sin(2 * np.pi * self.frequencies[-1] * self.originalSignalPlot.samples_time)
 
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.originalSignalPlot.signalFreq, self.frequencies[-1]), yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
@@ -240,12 +261,13 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             currSignalValues -= self.browsedSignals[idxRemoved]
             self.browsedSignals.pop(idxRemoved)
         else:
-            currSignalValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time)
+            currSignalValues -= self.amplitudes[idxRemoved] * np.sin(2 * np.pi * self.frequencies[idxRemoved] * self.originalSignalPlot.originalSignal_time - self.phases[idxRemoved])
         currSampleValues = self.originalSignalPlot.samples_values
         
         for i in range(idxRemoved, len(self.amplitudes) - 1):
             self.amplitudes[i] = self.amplitudes[i + 1]
             self.frequencies[i] = self.frequencies[i + 1]
+            self.phases[i] = self.phases[i + 1]
             
             currItemText = self.removeSignalComboBox.itemText(i + 1)
             modifiedText = currItemText[ : 7] + f"{i + 1}" + currItemText[8 : ]
@@ -254,6 +276,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.removeSignalComboBox.removeItem(len(self.amplitudes) - 1)
         self.amplitudes.pop()
         self.frequencies.pop()
+        self.phases.pop()
 
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.frequencies), yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
