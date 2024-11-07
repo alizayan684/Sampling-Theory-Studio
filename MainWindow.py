@@ -234,7 +234,7 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.removeSignalComboBox.removeItem(len(self.amplitudes) - 1)
         self.amplitudes.pop()
         self.frequencies.pop()
-
+        
         self.originalSignalPlot.ShowSampledSignal(originalSignal= currSignalValues, signalNoise= self.originalSignalPlot.signalNoise, signalFreq= max(self.frequencies), yLimit= self.originalSignalPlot.yLimit, f_sampling = self.originalSignalPlot.f_sampling, samples_values= currSampleValues, sampleNoise= self.originalSignalPlot.sampleNoise, originalSignal_time= self.originalSignalPlot.originalSignal_time)
         self.sampledSignalPlot.ReconstructSampledSignal(self.originalSignalPlot, reconstructionMethod = self.sampledSignalPlot.reconstructionMethod)
         self.differencePlot.ShowDifferenceSignal(self.originalSignalPlot, self.sampledSignalPlot)
