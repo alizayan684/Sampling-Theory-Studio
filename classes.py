@@ -287,7 +287,7 @@ class FreqSignalGraph(pg.PlotWidget):
                 aliasedFrequencies.append(aliased_freq)
                 
                 # replace this out of nyquist range frequency with its corresponding aliasing frequency
-                frequenciesOfInterest[i] = aliased_freq  
+                frequenciesOfInterest[i] = 0
                 #print(frequenciesOfInterest)
                 
         # Frequency domain
@@ -296,26 +296,34 @@ class FreqSignalGraph(pg.PlotWidget):
         # Only plot the positive frequencies
         #positive_freqs = fft_freqs[:len(fft_freqs) // 2]
         impulse_magnitude = np.zeros_like(fft_freqs)
+        aliased_impulse_magnitude = np.zeros_like(fft_freqs)
         
         for freq in frequenciesOfInterest:
             impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
             if impulse_index.size > 0:
-                impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+                if freq != 0:
+                    impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
                 
-        #if self.f_sampling < 2 * self.f_max:
-        for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
-            if impulse_index.size > 0:
-                impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
+        for aliased_freq in aliasedFrequencies:
+            aliased_impulse_index = np.where(np.isclose(fft_freqs, aliased_freq, atol=1e-2))[0]  # Find index for aliased frequency components
+            if aliased_impulse_index.size > 0:
+                aliased_impulse_magnitude[aliased_impulse_index] = 1  # Set the impulse magnitud
+        
+        # setting x axis limit to be dynamic with the maximum and minimum frequencies.     
+        max_x = max(frequenciesOfInterest)
+        min_x = min(frequenciesOfInterest)
+        
+        if len(aliasedFrequencies)> 0:
+            maximum_aliased_freq = max(aliasedFrequencies)
+            minimum_aliased_freq = min(aliasedFrequencies)
+            max_x = max(max_x, maximum_aliased_freq)
+            min_x = min(min_x, minimum_aliased_freq)
                     
-        if impulse_index.size > 0:
-            # Choose color based on frequency
-            if freq <= (self.f_sampling / 2):
-                color = 'g'  # Green for frequencies <= Nyquist
-            else:
-                color = 'r' 
 
         # Plotting the frequency domain representation
-        self.setXRange(-15, 15)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin=-15, xMax=15, yMin=-0.02, yMax=0.3)
+
+        self.setXRange(min_x - 5, max_x + 5)  # Set x-axis range from 0 to 11
+        self.plotItem.getViewBox().setLimits(xMin= min_x - 5, xMax= max_x + 5, yMin=-0.02, yMax=0.3)
+        
+        self.plot(fft_freqs, aliased_impulse_magnitude, pen = 'r')
         self.plot(fft_freqs, impulse_magnitude, pen = 'b')
