@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 UI_Final.ui
 main_ui_final.py
+*.ui
