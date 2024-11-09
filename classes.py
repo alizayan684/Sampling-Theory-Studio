@@ -327,3 +327,29 @@ class FreqSignalGraph(pg.PlotWidget):
         
         self.plot(fft_freqs, aliased_impulse_magnitude, pen = 'r')
         self.plot(fft_freqs, impulse_magnitude, pen = 'b')
+        
+
+        # Define a fixed set of colors for the frequency components
+        colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
+        
+        # Plotting the frequency domain representation with attenuation
+        freq_color_map = {}
+        for i, freq in enumerate(frequenciesOfInterest):
+            # Assign the same color to positive and negative frequencies
+            if freq in freq_color_map:
+             color = freq_color_map[freq]
+            elif -freq in freq_color_map:
+             color = freq_color_map[-freq]
+            else:
+             color = colors[i % len(colors)]
+            freq_color_map[freq] = color
+            freq_color_map[-freq] = color
+            
+            # Generate a Gaussian-like attenuation shape centered at the frequency
+            attenuation_shape = np.exp(-((fft_freqs - freq) ** 2) / (2 * (0.5 ** 2)))
+            
+            # Plot the attenuation shape
+            self.plot(fft_freqs, attenuation_shape, pen=color)
+            # Highlight intersected area in a different color
+            intersected_area = np.minimum(impulse_magnitude, attenuation_shape)
+            self.plot(fft_freqs, intersected_area, pen='y', fillLevel=0, brush=(255, 255, 0, 100))
