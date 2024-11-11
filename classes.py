@@ -93,7 +93,6 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.reconstructedSignal_values_correspondOriginalTime = self.whittaker_shannon(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.setXRange(0, 3)
-            self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')        
         
@@ -108,7 +107,6 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.reconstructedSignal_values_correspondOriginalTime = self.fourier_series(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.setXRange(0, 3)
-            self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
         
@@ -123,7 +121,6 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.reconstructedSignal_values_correspondOriginalTime = self.akima_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.setXRange(0, 3)
-            self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
 
@@ -138,16 +135,8 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.reconstructedSignal_values_correspondOriginalTime = self.rectangular_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
             self.setXRange(0, 3)
-            self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
-
-            
-            
-
-    
-
-
     
     # reconstructing using Whittaker Shannon formula
     def whittaker_shannon(self,t, t_samples, samples):
@@ -282,7 +271,6 @@ class DifferenceGraph(pg.PlotWidget):
         self.differenceSignal_values = self.originalSignal_values - self.reconstructedSignal_values_correspondOriginalTime 
         self.yLimit = max(self.differenceSignal_values)
         self.setXRange(0, 3)
-        self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.differenceSignal_values, pen = 'y') # plotting the difference between original and reconstructed signals at the same time values (time values of the original signal).
 
