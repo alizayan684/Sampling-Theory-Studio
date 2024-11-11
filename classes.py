@@ -15,16 +15,15 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_time =  np.linspace(0, self.duration, 100 * self.duration) # initializing x values of the original signal(time domain)
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time + self.phaseShift)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
-        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
-        self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values)
         self.signalNoise = 0
-        self.sampleNoise = 0
-        self.ShowSampledSignal(self.originalSignal_values, self.signalNoise, self.signalFreq, self.f_sampling, self.sampleNoise) # showing default signal when openning the application
+        self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
+        self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values + self.signalNoise)
+        self.ShowSampledSignal(self.originalSignal_values, self.signalNoise, self.signalFreq, self.f_sampling) # showing default signal when openning the application
         
         self.plotItem.getViewBox().sigRangeChanged.connect(self.resetRange)
         
     # showing sampled signal in the graph    
-    def ShowSampledSignal(self, originalSignal, signalNoise, signalFreq, f_sampling, sampleNoise): 
+    def ShowSampledSignal(self, originalSignal, signalNoise, signalFreq, f_sampling): 
         # I pass the "originalSignal_time" as it will be needed for the default signal that occurs when starting the application and also to keep  the same signal time when changing the slider
         self.clear()
         self.originalSignal_values = originalSignal
@@ -33,10 +32,8 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.f_sampling = f_sampling
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling)
         self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values + self.signalNoise)
-        self.sampleNoise = sampleNoise
         self.yLimit = max(self.originalSignal_values)
         self.setXRange(0, 5)
-        self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.originalSignal_values + self.signalNoise, pen = 'r')
         self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")
@@ -58,7 +55,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
         self.f_sampling = OriginalSignalGraph().f_sampling
         self.duration = OriginalSignalGraph().duration
         self.reconstructedSignal_time = OriginalSignalGraph().samples_time
-        self.reconstructedSignal_values = OriginalSignalGraph().samples_values + OriginalSignalGraph().sampleNoise
+        self.reconstructedSignal_values = OriginalSignalGraph().samples_values
         self.reconstructionMethod = 'whittaker shannon' # initializing the reconstruction method to be whittaker shannon method.
         # self.reconstructionMethod = ['whittaker shannon','Fourier Series' , 'Akima Interpolation','Rectangular Interpolation']
         self.ReconstructSampledSignal(OriginalSignalGraph(), self.reconstructionMethod)
@@ -87,7 +84,6 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             self.originalSignal_duration = originalGraph_instance.duration
             self.reconstructedSignal_time = originalGraph_instance.samples_time
             self.reconstructedSignal_values = originalGraph_instance.samples_values
-            self.sampleNoise = originalGraph_instance.sampleNoise
             
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the whittaker shannon formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.whittaker_shannon(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
@@ -267,8 +263,9 @@ class DifferenceGraph(pg.PlotWidget):
         self.originalSignal_time = originalGraph_instance.originalSignal_time
         self.originalSignal_duration = originalGraph_instance.duration  
         self.originalSignal_values = originalGraph_instance.originalSignal_values
+        self.originalSignal_noise = originalGraph_instance.signalNoise
         self.reconstructedSignal_values_correspondOriginalTime = reconstructedGraph_instance.reconstructedSignal_values_correspondOriginalTime  
-        self.differenceSignal_values = self.originalSignal_values - self.reconstructedSignal_values_correspondOriginalTime 
+        self.differenceSignal_values = self.originalSignal_values + self.originalSignal_noise - self.reconstructedSignal_values_correspondOriginalTime 
         self.yLimit = max(self.differenceSignal_values)
         self.setXRange(0, 5)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
