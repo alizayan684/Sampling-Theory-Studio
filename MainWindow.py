@@ -206,7 +206,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
     def setNoise(self):
         self.signalToNoiseLCD.display(self.signalToNoiseSlider.value())
         currSignalValues = self.originalSignalPlot.originalSignal_values
-        currSampleValues = self.originalSignalPlot.samples_values
 
         signalPower = np.mean(currSignalValues ** 2) # The power of a signal is typically defined as the average of the squared values of the signal over time
         noisePower = signalPower / (10 ** (self.signalToNoiseSlider.value() / 10)) # This converts the SNR from decibels to a linear scale
