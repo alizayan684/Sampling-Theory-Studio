@@ -124,21 +124,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         periodicTime = np.average(cycleTimes)
         return 1 / periodicTime
 
-    """def ShowSampledSignal(self, originalSignal, signalNoise, signalFreq, yLimit, f_sampling, samples_values, sampleNoise, originalSignal_time=None):
-        self.clear()
-        self.originalSignal_values = originalSignal
-        self.signalNoise = signalNoise
-        self.signalFreq = signalFreq
-        self.yLimit = yLimit
-        self.f_sampling = f_sampling
-        self.samples_values = samples_values
-        self.sampleNoise = sampleNoise
-        self.originalSignal_time = originalSignal_time
-
-        self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
-        self.plot(self.originalSignal_time, self.originalSignal_values + self.signalNoise, pen='r')
-        self.plot(self.samples_time, self.samples_values, pen=None, symbol='o', symbolBrush='b', symbolSize=8, name="Samples")   """
-    
     def setSamplingSliderValue(self):
         self.originalSignalPlot.f_sampling = self.samplingFreqSlider.value()
         self.samplingFreqSlider_2.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))

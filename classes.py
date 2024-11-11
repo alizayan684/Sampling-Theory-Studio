@@ -35,7 +35,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values + self.signalNoise)
         self.sampleNoise = sampleNoise
         self.yLimit = max(self.originalSignal_values)
-        self.setXRange(0, 3)
+        self.setXRange(0, 5)
         self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.originalSignal_values + self.signalNoise, pen = 'r')
@@ -43,8 +43,8 @@ class OriginalSignalGraph(pg.PlotWidget):
     
     def resetRange(self):
         currXRange = self.plotItem.getViewBox().viewRange()[0]
-        if ((currXRange[1] - currXRange[0]) > 5):
-            self.setXRange(0, 3)
+        if ((currXRange[1] - currXRange[0]) > 7):
+            self.setXRange(0, 5)
             self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
 
 class ReconstructedSignalGraph(pg.PlotWidget):
@@ -67,8 +67,8 @@ class ReconstructedSignalGraph(pg.PlotWidget):
     
     def resetRange(self):
         currXRange = self.plotItem.getViewBox().viewRange()[0]
-        if ((currXRange[1] - currXRange[0]) > 5):
-            self.setXRange(0, 3)
+        if ((currXRange[1] - currXRange[0]) > 7):
+            self.setXRange(0, 5)
             self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
 
     # reconstruction signal method  
@@ -92,7 +92,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the whittaker shannon formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.whittaker_shannon(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
-            self.setXRange(0, 3)
+            self.setXRange(0, 5)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')        
         
@@ -106,7 +106,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the Fourier Series formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.fourier_series(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
-            self.setXRange(0, 3)
+            self.setXRange(0, 5)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
         
@@ -120,7 +120,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the Polynomial Interpolation formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.akima_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
-            self.setXRange(0, 3)
+            self.setXRange(0, 5)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
 
@@ -134,7 +134,7 @@ class ReconstructedSignalGraph(pg.PlotWidget):
             # getting the reconstructed signal values corresponding to the original signal time values. (same as interpolation did but here we are using the Spline Interpolation formula)
             self.reconstructedSignal_values_correspondOriginalTime = self.rectangular_interpolation(self.originalSignal_time, self.reconstructedSignal_time, self.reconstructedSignal_values)
             self.yLimit = max(self.reconstructedSignal_values_correspondOriginalTime)
-            self.setXRange(0, 3)
+            self.setXRange(0, 5)
             self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
             self.plot(self.originalSignal_time, self.reconstructedSignal_values_correspondOriginalTime, pen='g')
     
@@ -249,8 +249,8 @@ class DifferenceGraph(pg.PlotWidget):
     
     def resetRange(self):
         currXRange = self.plotItem.getViewBox().viewRange()[0]
-        if ((currXRange[1] - currXRange[0]) > 5):
-            self.setXRange(0, 3)
+        if ((currXRange[1] - currXRange[0]) > 7):
+            self.setXRange(0, 5)
             self.setYRange(-self.yLimit - 0.3, self.yLimit + 0.3)
         
         
@@ -270,7 +270,7 @@ class DifferenceGraph(pg.PlotWidget):
         self.reconstructedSignal_values_correspondOriginalTime = reconstructedGraph_instance.reconstructedSignal_values_correspondOriginalTime  
         self.differenceSignal_values = self.originalSignal_values - self.reconstructedSignal_values_correspondOriginalTime 
         self.yLimit = max(self.differenceSignal_values)
-        self.setXRange(0, 3)
+        self.setXRange(0, 5)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=self.originalSignal_duration, yMin=-self.yLimit - 0.3, yMax=self.yLimit + 0.3)
         self.plot(self.originalSignal_time, self.differenceSignal_values, pen = 'y') # plotting the difference between original and reconstructed signals at the same time values (time values of the original signal).
 
