@@ -1,4 +1,4 @@
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore, QtGui
 import pyqtgraph as pg
 import numpy as np
 from scipy.interpolate import interp1d
@@ -278,71 +278,72 @@ class FreqSignalGraph(pg.PlotWidget):
     
     
     def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
-        """
-        Params:
-        frequenciesOfInterest: all frequencies in the mix of signals I plot. note: it's passed by copy not by reference.
-        originalSignal_instance: already made instance of the OriginalSignalGraph to plot the corresponding signal in the frequency domain graph.
-        """
         self.clear()
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
-        self.f_sampling = originalSignal_instance.f_sampling  # Samples per second
-        self.f_max =  originalSignal_instance.signalFreq
+        self.f_sampling = originalSignal_instance.f_sampling  
+        self.f_max = originalSignal_instance.signalFreq
         
+        # Create negative frequencies
+        negativeFrequencies = [-freq for freq in frequenciesOfInterest]
+        frequenciesOfInterest += negativeFrequencies
+        
+        # Handle aliasing
         aliasedFrequencies = []
-        negativeFrequencies = [-freq for freq in frequenciesOfInterest] # forming the negative frequencies
-        frequenciesOfInterest += negativeFrequencies  # appending the negative frequencies to the frequencies of interest array
-        
-        for i in range (len(frequenciesOfInterest)):
-            if np.abs(frequenciesOfInterest[i]) > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
-                n = int(max(self.f_sampling, np.abs(frequenciesOfInterest[i])) / min(self.f_sampling, np.abs(frequenciesOfInterest[i])))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
-                
-                if frequenciesOfInterest[i] >= 0: # check whether the freq is +ve or -ve to adjust the aliasing formula
-                    aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
-                else:
-                    aliased_freq = - np.abs( np.abs(frequenciesOfInterest[i]) - n * self.f_sampling)
-                # Add the aliased frequency to the aliased frequencies list
+        for freq in frequenciesOfInterest[:]:
+            if np.abs(freq) > (self.f_sampling / 2):
+                n = int(max(self.f_sampling, np.abs(freq)) / min(self.f_sampling, np.abs(freq)))
+                aliased_freq = np.abs(freq - n * self.f_sampling) if freq >= 0 else -np.abs(np.abs(freq) - n * self.f_sampling)
                 aliasedFrequencies.append(aliased_freq)
-                
-                # replace this out of nyquist range frequency with its corresponding aliasing frequency
-                frequenciesOfInterest[i] = 0
-                #print(frequenciesOfInterest)
-                
-        # Frequency domain
-        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
+                frequenciesOfInterest.remove(freq)
+
+        # Create frequency axis with fine resolution
+        freq_resolution = 0.1
+        max_freq = max(max(np.abs(frequenciesOfInterest + aliasedFrequencies)) * 1.5, self.f_sampling/2)
+        fft_freqs = np.arange(-max_freq, max_freq, freq_resolution)
         
-        # Only plot the positive frequencies
-        #positive_freqs = fft_freqs[:len(fft_freqs) // 2]
-        impulse_magnitude = np.zeros_like(fft_freqs)
-        aliased_impulse_magnitude = np.zeros_like(fft_freqs)
+        # Initialize spectrum
+        spectrum = np.zeros_like(fft_freqs, dtype=float)
+        aliased_spectrum = np.zeros_like(fft_freqs, dtype=float)
         
+        # Create bell-shaped curves for each frequency component
+        sigma = 0.5  # Width of the bell curve
         for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
-            if impulse_index.size > 0:
-                if freq != 0:
-                    impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
-                
-        for aliased_freq in aliasedFrequencies:
-            aliased_impulse_index = np.where(np.isclose(fft_freqs, aliased_freq, atol=1e-2))[0]  # Find index for aliased frequency components
-            if aliased_impulse_index.size > 0:
-                aliased_impulse_magnitude[aliased_impulse_index] = 1  # Set the impulse magnitud
+            if freq != 0:
+                spectrum += np.exp(-(fft_freqs - freq)**2 / (2*sigma**2))
         
-        # setting x axis limit to be dynamic with the maximum and minimum frequencies.     
-        max_x = max(frequenciesOfInterest)
-        min_x = min(frequenciesOfInterest)
+        for freq in aliasedFrequencies:
+            aliased_spectrum += np.exp(-(fft_freqs - freq)**2 / (2*sigma**2))
         
-        if len(aliasedFrequencies)> 0:
-            maximum_aliased_freq = max(aliasedFrequencies)
-            minimum_aliased_freq = min(aliasedFrequencies)
-            max_x = max(max_x, maximum_aliased_freq)
-            min_x = min(min_x, minimum_aliased_freq)
-                    
-
-        # Plotting the frequency domain representation
-
-        self.setXRange(min_x - 5, max_x + 5)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin= min_x - 5, xMax= max_x + 5, yMin=-0.02, yMax=0.3)
+        # Normalize
+        if np.max(spectrum) > 0:
+            spectrum = spectrum / np.max(spectrum)
+        if np.max(aliased_spectrum) > 0:
+            aliased_spectrum = aliased_spectrum / np.max(aliased_spectrum)
         
-        self.plot(fft_freqs, aliased_impulse_magnitude, pen = 'r')
-        self.plot(fft_freqs, impulse_magnitude, pen = 'b')
+        # Find plot limits
+        all_freqs = frequenciesOfInterest + aliasedFrequencies
+        max_x = max(all_freqs) if all_freqs else self.f_sampling/2
+        min_x = min(all_freqs) if all_freqs else -self.f_sampling/2
+        margin = (max_x - min_x) * 0.2 if max_x != min_x else 5
+        
+        # Set plot limits
+        self.setXRange(min_x - margin, max_x + margin)
+        self.plotItem.getViewBox().setLimits(
+            xMin=min_x - margin,
+            xMax=max_x + margin,
+            yMin=-0.1,
+            yMax=1.2
+        )
+        
+        # Plot the spectra
+        self.plot(fft_freqs, aliased_spectrum, pen='r')
+        self.plot(fft_freqs, spectrum, pen='b')
+        # Add colored frequency markers
+        for i, freq in enumerate(frequenciesOfInterest):
+            color = QtGui.QColor()
+            color.setHsv(int(i/len(frequenciesOfInterest)*360), 120, 230)
+            self.addLine(x=freq, pen=pg.mkPen(color, width=2, style=QtCore.Qt.DashLine))
+            if freq in aliasedFrequencies:
+             self.addLine(x=freq, pen=pg.mkPen(color, width=2, style=QtCore.Qt.DotLine))
