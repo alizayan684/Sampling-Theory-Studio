@@ -347,3 +347,110 @@ class FreqSignalGraph(pg.PlotWidget):
             self.addLine(x=freq, pen=pg.mkPen(color, width=2, style=QtCore.Qt.DashLine))
             if freq in aliasedFrequencies:
              self.addLine(x=freq, pen=pg.mkPen(color, width=2, style=QtCore.Qt.DotLine))
+
+
+# class FreqSignalGraph(pg.PlotWidget):
+#     def __init__(self, frequenciesOfInterest, parent=None):
+#         super().__init__(parent)
+        
+#         # Setup visual style
+#         self.getPlotItem().showGrid(x=True, y=True, alpha=0.3)
+#         self.setBackground('w')
+#         self.getPlotItem().getAxis('bottom').setLabel('Frequency (Hz)', color='k')
+#         self.getPlotItem().getAxis('left').setLabel('Magnitude', color='k')
+        
+#         # Add legend
+#         self.legend = self.getPlotItem().addLegend()
+        
+#         # Setup interactive features
+#         self.proxy = pg.SignalProxy(self.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+#         self.vLine = pg.InfiniteLine(angle=90, movable=False)
+#         self.hLine = pg.InfiniteLine(angle=0, movable=False)
+#         self.addItem(self.vLine, ignoreBounds=True)
+#         self.addItem(self.hLine, ignoreBounds=True)
+        
+#         # Add text label for cursor position
+#         self.label = pg.TextItem(text='', color='k', anchor=(0, 1))
+#         self.addItem(self.label)
+        
+#         self.ShowSignalFreqDomain(frequenciesOfInterest, OriginalSignalGraph())
+
+#     def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
+#         self.clear()
+        
+#         # Setup style for plots
+#         pen_original = pg.mkPen(color='b', width=2)
+#         pen_aliased = pg.mkPen(color='r', width=2, style=QtCore.Qt.DashLine)
+        
+#         # Original implementation with improvements
+#         self.originalSignal_values = originalSignal_instance.originalSignal_values
+#         self.f_sampling = originalSignal_instance.f_sampling  
+#         self.f_max = originalSignal_instance.signalFreq
+        
+#         # Create frequency components
+#         negativeFrequencies = [-freq for freq in frequenciesOfInterest]
+#         frequenciesOfInterest += negativeFrequencies
+        
+#         # Handle aliasing with improved visualization
+#         aliasedFrequencies = []
+#         for freq in frequenciesOfInterest[:]:
+#             if np.abs(freq) > (self.f_sampling / 2):
+#                 n = int(max(self.f_sampling, np.abs(freq)) / min(self.f_sampling, np.abs(freq)))
+#                 aliased_freq = np.abs(freq - n * self.f_sampling) if freq >= 0 else -np.abs(np.abs(freq) - n * self.f_sampling)
+#                 aliasedFrequencies.append(aliased_freq)
+#                 frequenciesOfInterest.remove(freq)
+
+#         # Improved frequency resolution
+#         freq_resolution = 0.05
+#         max_freq = max(max(np.abs(frequenciesOfInterest + aliasedFrequencies)) * 1.5, self.f_sampling/2)
+#         fft_freqs = np.arange(-max_freq, max_freq, freq_resolution)
+        
+#         # Calculate spectra with enhanced Gaussian windows
+#         spectrum = np.zeros_like(fft_freqs, dtype=float)
+#         aliased_spectrum = np.zeros_like(fft_freqs, dtype=float)
+        
+#         sigma = 0.3  # Narrower peaks for better resolution
+#         for freq in frequenciesOfInterest:
+#             if freq != 0:
+#                 spectrum += np.exp(-(fft_freqs - freq)**2 / (2*sigma**2))
+        
+#         for freq in aliasedFrequencies:
+#             aliased_spectrum += np.exp(-(fft_freqs - freq)**2 / (2*sigma**2))
+        
+#         # Normalize spectra
+#         spectrum = spectrum / np.max(spectrum) if np.max(spectrum) > 0 else spectrum
+#         aliased_spectrum = aliased_spectrum / np.max(aliased_spectrum) if np.max(aliased_spectrum) > 0 else aliased_spectrum
+        
+#         # Plot with enhanced styling
+#         self.plot(fft_freqs, spectrum, pen=pen_original, name='Original Components')
+#         self.plot(fft_freqs, aliased_spectrum, pen=pen_aliased, name='Aliased Components')
+        
+#         # Add frequency markers with improved visibility
+#         for freq in frequenciesOfInterest:
+#             marker = pg.InfiniteLine(pos=freq, angle=90, 
+#                                    pen=pg.mkPen(color=(0, 0, 255, 100), width=1, style=QtCore.Qt.DashLine))
+#             self.addItem(marker)
+        
+#         # Set view limits with padding
+#         margin = max_freq * 0.1
+#         self.setXRange(-max_freq - margin, max_freq + margin)
+#         self.setYRange(-0.1, 1.1)
+
+#     def mouseMoved(self, evt):
+#         """Handle mouse movement for interactive features"""
+#         pos = evt[0]
+#         if self.sceneBoundingRect().contains(pos):
+#             mousePoint = self.getPlotItem().vb.mapSceneToView(pos)
+#             self.vLine.setPos(mousePoint.x())
+#             self.hLine.setPos(mousePoint.y())
+#             self.label.setPos(mousePoint.x(), mousePoint.y())
+#             self.label.setText(f"Freq: {mousePoint.x():.1f} Hz\nMag: {mousePoint.y():.2f}")
+
+#     def enableSpectralAnalysis(self):
+#         """Add spectral analysis tools"""
+#         self.spectralAnalysisEnabled = True
+#         # Add peak detection
+#         # Add bandwidth measurement
+#         # Add frequency markers             
+
+     

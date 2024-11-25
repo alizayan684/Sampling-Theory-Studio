@@ -334,16 +334,6 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         c.save()
         
 
-    # for index in range(self.removeSignalComboBox.count()): 
-    #         item_text = self.removeSignalComboBox.itemText(index)  
-    #         # Using regular expressions to extract amplitude and frequency 
-    #         match = re.search(r"Amp: (\d+)mV \| Freq: (\d+)HZ", item_text) 
-    #         if match: 
-    #             amplitude = match.group(1) 
-    #             frequency = match.group(2) 
-    #             # Saving the extracted values to a file
-    #             file.write(f"Signal {index + 1} | Amplitude: {amplitude}mV | Frequency: {frequency}Hz\n")
-
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication([]);
