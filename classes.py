@@ -302,5 +302,5 @@ class FreqSignalGraph(pg.PlotWidget):
         
         
         self.setXRange(min_freq, max_freq)
-        self.setYRange(min_amplitude - 1, max_amplitude + 1)
+        self.setYRange(min_amplitude, max_amplitude)
         self.plot(self.frequencies, self.amplitudes, pen = "b")
