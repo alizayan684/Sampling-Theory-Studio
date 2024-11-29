@@ -16,7 +16,7 @@ class OriginalSignalGraph(pg.PlotWidget):
         self.originalSignal_values = np.sin(2 * np.pi * self.signalFreq * self.originalSignal_time + self.phaseShift)  # initialization of the graph's original signal values
         self.yLimit = max(self.originalSignal_values)
         self.samples_time = np.arange(0, self.duration, step= 1/self.f_sampling) 
-        self.samples_values = np.interp(self.samples_time, self.originalSignal_time, self.originalSignal_values)
+        self.samples_values = np.sin(2 * np.pi * self.signalFreq * self.samples_time)
         self.signalNoise = 0
         self.sampleNoise = 0
         self.ShowSampledSignal(self.originalSignal_values, self.signalNoise, self.signalFreq, self.yLimit, self.f_sampling, self.samples_values, self.sampleNoise, self.originalSignal_time) # showing default signal when openning the application
@@ -259,71 +259,29 @@ class FreqSignalGraph(pg.PlotWidget):
     
     
     def ShowSignalFreqDomain(self, frequenciesOfInterest, originalSignal_instance):
-        """
-        Params:
-        frequenciesOfInterest: all frequencies in the mix of signals I plot. note: it's passed by copy not by reference.
-        originalSignal_instance: already made instance of the OriginalSignalGraph to plot the corresponding signal in the frequency domain graph.
-        """
+       
         self.clear()
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
+        self.samples_values = originalSignal_instance.samples_values
         self.f_sampling = originalSignal_instance.f_sampling  # Samples per second
-        self.f_max =  originalSignal_instance.signalFreq
         
-        aliasedFrequencies = []
-        negativeFrequencies = [-freq for freq in frequenciesOfInterest] # forming the negative frequencies
-        frequenciesOfInterest += negativeFrequencies  # appending the negative frequencies to the frequencies of interest array
+        self.freq_components = np.fft.fft(self.samples_values)   # getting fft for the sampled signal
+        self.frequencies = np.fft.fftfreq(len(self.samples_values), 1/self.f_sampling)   # getting frequencies
+        self.amplitudes = np.abs(self.freq_components)   # getting the amplitude component that each frequency is sharing with
         
-        for i in range (len(frequenciesOfInterest)):
-            if np.abs(frequenciesOfInterest[i]) > (self.f_sampling / 2):   # f_sampling/2 is the niquist frequency
-                n = int(max(self.f_sampling, np.abs(frequenciesOfInterest[i])) / min(self.f_sampling, np.abs(frequenciesOfInterest[i])))  # n represents multiples of f_sampling that we must subtract from the frequency that is above the nyquist frequency to go in to the range of frequencies below or equal to the nyquist freq (f_sampling/2)
-                
-                if frequenciesOfInterest[i] >= 0: # check whether the freq is +ve or -ve to adjust the aliasing formula
-                    aliased_freq = np.abs(frequenciesOfInterest[i] - n * self.f_sampling)  # formula: f_aliasing = | f - n * fs |
-                else:
-                    aliased_freq = - np.abs( np.abs(frequenciesOfInterest[i]) - n * self.f_sampling)
-                # Add the aliased frequency to the aliased frequencies list
-                aliasedFrequencies.append(aliased_freq)
-                
-                # replace this out of nyquist range frequency with its corresponding aliasing frequency
-                frequenciesOfInterest[i] = 0
-                #print(frequenciesOfInterest)
-                
-        # Frequency domain
-        fft_freqs = np.fft.fftfreq(len(self.originalSignal_values), 1 / 22)  # Frequency bins
+        print(f"used frequencies: {self.frequencies}")  #debugging
+        print(f"-------------------------------------------------------------------")
+        print(f"amplitudes: {self.amplitudes}")
         
-        # Only plot the positive frequencies
-        #positive_freqs = fft_freqs[:len(fft_freqs) // 2]
-        impulse_magnitude = np.zeros_like(fft_freqs)
-        aliased_impulse_magnitude = np.zeros_like(fft_freqs)
+        # for setting x and y graph ranges
+        max_freq = max(self.frequencies) 
+        min_freq = min(self.frequencies)
+        max_amplitude = max(self.amplitudes)
+        min_amplitude = min(self.amplitudes)
         
-        for freq in frequenciesOfInterest:
-            impulse_index = np.where(np.isclose(fft_freqs, freq, atol=1e-2))[0]  # Find index for frequency components
-            if impulse_index.size > 0:
-                if freq != 0:
-                    impulse_magnitude[impulse_index] = 1  # Set the impulse magnitude
-                
-        for aliased_freq in aliasedFrequencies:
-            aliased_impulse_index = np.where(np.isclose(fft_freqs, aliased_freq, atol=1e-2))[0]  # Find index for aliased frequency components
-            if aliased_impulse_index.size > 0:
-                aliased_impulse_magnitude[aliased_impulse_index] = 1  # Set the impulse magnitud
         
-        # setting x axis limit to be dynamic with the maximum and minimum frequencies.     
-        max_x = max(frequenciesOfInterest)
-        min_x = min(frequenciesOfInterest)
-        
-        if len(aliasedFrequencies)> 0:
-            maximum_aliased_freq = max(aliasedFrequencies)
-            minimum_aliased_freq = min(aliasedFrequencies)
-            max_x = max(max_x, maximum_aliased_freq)
-            min_x = min(min_x, minimum_aliased_freq)
-                    
-
-        # Plotting the frequency domain representation
-
-        self.setXRange(min_x - 5, max_x + 5)  # Set x-axis range from 0 to 11
-        self.plotItem.getViewBox().setLimits(xMin= min_x - 5, xMax= max_x + 5, yMin=-0.02, yMax=0.3)
-        
-        self.plot(fft_freqs, aliased_impulse_magnitude, pen = 'r')
-        self.plot(fft_freqs, impulse_magnitude, pen = 'b')
+        self.setXRange(min_freq, max_freq)
+        self.setYRange(min_amplitude - 1, max_amplitude + 1)
+        self.plot(self.frequencies, self.amplitudes, pen = "b")
