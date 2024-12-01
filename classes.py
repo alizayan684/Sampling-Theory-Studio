@@ -283,24 +283,52 @@ class FreqSignalGraph(pg.PlotWidget):
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
+        self.originalSignal_time = originalSignal_instance.originalSignal_time
         self.samples_values = originalSignal_instance.samples_values
         self.f_sampling = originalSignal_instance.f_sampling  # Samples per second
         
-        self.freq_components = np.fft.fft(self.samples_values)   # getting fft for the sampled signal
-        self.frequencies = np.fft.fftfreq(len(self.samples_values), 1/self.f_sampling)   # getting frequencies
+        self.freq_components = np.fft.fft(self.originalSignal_values)   # getting fft for the original signal
+        self.frequencies = np.fft.fftfreq(len(self.originalSignal_values), self.originalSignal_time[1] - self.originalSignal_time[0])   # getting frequencies
         self.amplitudes = np.abs(self.freq_components)   # getting the amplitude component that each frequency is sharing with
         
-        print(f"used frequencies: {self.frequencies}")  #debugging
-        print(f"-------------------------------------------------------------------")
-        print(f"amplitudes: {self.amplitudes}")
+        # print(f"used frequencies: {self.frequencies}")  #debugging
+        # print(f"-------------------------------------------------------------------")
+        # print(f"amplitudes: {self.amplitudes}")
+        
+        # frequency repetition
+        pos_repeated_frequencies = []
+        pos_repeated_freq_amps = []
+        neg_repeated_frequencies = []
+        neg_repeated_freq_amps = []
+    
+        
+        # repetiton of the whole signal(positive and negative frequencies "the whole block") in the positive part
+        #for loopCounter in range(1, 3):
+        for i in range (len(self.frequencies)):
+            pos_repeated_frequencies.append(self.frequencies[i] + self.f_sampling)
+            pos_repeated_freq_amps.append(self.amplitudes[i])
+            
+        # repetiton of the whole signal(positive and negative frequencies "the whole block") in the negative part   
+        for i in range (len(self.frequencies)):
+            neg_repeated_frequencies.append(self.frequencies[i] - self.f_sampling)
+            neg_repeated_freq_amps.append(self.amplitudes[i])
+            
         
         # for setting x and y graph ranges
-        max_freq = max(self.frequencies) 
+        max_freq = max(self.frequencies)
+        max_repeated_freq = max(pos_repeated_frequencies) 
+        max_x_limit = max(max_freq, max_repeated_freq)
         min_freq = min(self.frequencies)
+        min_repeated_freq = min(neg_repeated_frequencies) 
+        min_x_limit = min(min_freq, min_repeated_freq)
+         
         max_amplitude = max(self.amplitudes)
         min_amplitude = min(self.amplitudes)
         
         
-        self.setXRange(min_freq, max_freq)
-        self.setYRange(min_amplitude, max_amplitude)
+        self.setXRange(min_x_limit, max_x_limit)
+        self.setYRange(200, max_amplitude)
+        self.plot(pos_repeated_frequencies, pos_repeated_freq_amps, pen = "r")
+        self.plot(neg_repeated_frequencies, neg_repeated_freq_amps, pen = "y")
         self.plot(self.frequencies, self.amplitudes, pen = "b")
+        
