@@ -1,1 +1,1 @@
-phaseComposerSlider
+setMaximum

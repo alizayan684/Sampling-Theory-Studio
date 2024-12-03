@@ -283,12 +283,14 @@ class FreqSignalGraph(pg.PlotWidget):
         
         # setting up needed values for fourier transform
         self.originalSignal_values = originalSignal_instance.originalSignal_values
+        self.signalNoise = originalSignal_instance.signalNoise
         self.originalSignal_time = originalSignal_instance.originalSignal_time
         self.samples_values = originalSignal_instance.samples_values
         self.f_sampling = originalSignal_instance.f_sampling  # Samples per second
+        self.signalFreq = originalSignal_instance.signalFreq
         
-        self.freq_components = np.fft.fft(self.originalSignal_values)   # getting fft for the original signal
-        self.frequencies = np.fft.fftfreq(len(self.originalSignal_values), self.originalSignal_time[1] - self.originalSignal_time[0])   # getting frequencies
+        self.freq_components = np.fft.fft(self.originalSignal_values + self.signalNoise)   # getting fft for the original signal
+        self.frequencies = np.fft.fftfreq(len(self.originalSignal_values + self.signalNoise), self.originalSignal_time[1] - self.originalSignal_time[0])   # getting frequencies
         self.amplitudes = np.abs(self.freq_components)   # getting the amplitude component that each frequency is sharing with
         
         # print(f"used frequencies: {self.frequencies}")  #debugging
@@ -300,6 +302,8 @@ class FreqSignalGraph(pg.PlotWidget):
         pos_repeated_freq_amps = []
         neg_repeated_frequencies = []
         neg_repeated_freq_amps = []
+        low_amplitudes = []
+        low_amp_freqs = []
     
         
         # repetiton of the whole signal(positive and negative frequencies "the whole block") in the positive part
@@ -312,8 +316,11 @@ class FreqSignalGraph(pg.PlotWidget):
         for i in range (len(self.frequencies)):
             neg_repeated_frequencies.append(self.frequencies[i] - self.f_sampling)
             neg_repeated_freq_amps.append(self.amplitudes[i])
-            
         
+        for i in range (len(self.frequencies)):
+            if self.amplitudes[i] <= 500:
+                low_amplitudes.append(self.amplitudes[i])
+                low_amp_freqs.append(self.frequencies[i])
         # for setting x and y graph ranges
         max_freq = max(self.frequencies)
         max_repeated_freq = max(pos_repeated_frequencies) 
@@ -327,8 +334,13 @@ class FreqSignalGraph(pg.PlotWidget):
         
         
         self.setXRange(min_x_limit, max_x_limit)
-        self.setYRange(200, max_amplitude)
-        self.plot(pos_repeated_frequencies, pos_repeated_freq_amps, pen = "r")
-        self.plot(neg_repeated_frequencies, neg_repeated_freq_amps, pen = "y")
+        self.setYRange(min_amplitude, max_amplitude)
+        if self.f_sampling < 2 * self.signalFreq:
+            self.plot(pos_repeated_frequencies, pos_repeated_freq_amps, pen = "r")
+            self.plot(neg_repeated_frequencies, neg_repeated_freq_amps, pen = "r")
+        else:
+            self.plot(pos_repeated_frequencies, pos_repeated_freq_amps, pen = "y")
+            self.plot(neg_repeated_frequencies, neg_repeated_freq_amps, pen = "y")
         self.plot(self.frequencies, self.amplitudes, pen = "b")
+        self.plot(low_amp_freqs, low_amplitudes, "b")
         

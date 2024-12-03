@@ -20,10 +20,10 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         
         # setting up sampling slider values
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
-        self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
+        self.samplingFreqSlider.setMaximum( 20 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSlider.setValue(self.originalSignalPlot.f_sampling)    # inital value
         self.samplingFreqSlider_2.setMinimum(0)
-        self.samplingFreqSlider_2.setMaximum(7)   
+        self.samplingFreqSlider_2.setMaximum(20)   
         self.samplingFreqSlider_2.setValue(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))    
         self.normFreqLCD.display(float(self.samplingFreqSlider.value()/self.originalSignalPlot.signalFreq))
         self.actualFreqLCD.display(self.samplingFreqSlider.value())
@@ -118,9 +118,9 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
             self.amplitudeComposerSlider.setValue(1)
             self.freqComposerSlider.setValue(1)
             self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
-            self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
+            self.samplingFreqSlider.setMaximum( 20 * self.originalSignalPlot.signalFreq)   # max value
             self.samplingFreqSlider_2.setMinimum(0)  # min value
-            self.samplingFreqSlider_2.setMaximum(7)   # max value
+            self.samplingFreqSlider_2.setMaximum(20)   # max value
             self.setSamplingSliderValue()
 
     def calculate_frequency(self, signal, threshold):
@@ -243,9 +243,9 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.freqComposerSlider.setValue(1)
         self.phaseComposerSlider.setValue(0)
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
-        self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
+        self.samplingFreqSlider.setMaximum( 20 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSlider_2.setMinimum(0)  # min value
-        self.samplingFreqSlider_2.setMaximum(7)   # max value
+        self.samplingFreqSlider_2.setMaximum(20)   # max value
         self.setSamplingSliderValue()
     
     def removeSignal(self):
@@ -284,9 +284,9 @@ class MainWindow(Ui_Sampler, QtWidgets.QMainWindow):
         self.frequencyDomainPlot.ShowSignalFreqDomain(self.frequencies.copy(), self.originalSignalPlot)
         
         self.samplingFreqSlider.setMinimum( 0.5 * self.originalSignalPlot.signalFreq)  # min value
-        self.samplingFreqSlider.setMaximum( 7 * self.originalSignalPlot.signalFreq)   # max value
+        self.samplingFreqSlider.setMaximum( 20 * self.originalSignalPlot.signalFreq)   # max value
         self.samplingFreqSlider_2.setMinimum(0)  # min value
-        self.samplingFreqSlider_2.setMaximum(7)   # max value
+        self.samplingFreqSlider_2.setMaximum(20)   # max value
         self.setSamplingSliderValue()
 
     def generate_samples_from_signals(self, tests,  test_name , mix: MixingScenarios):
