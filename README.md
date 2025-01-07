@@ -1,5 +1,5 @@
 # Signal Sampler
-![alt text](screenshots/home.png)
+![Main Picture](screenshots/home.png)
 
 
 ## Description
@@ -22,27 +22,27 @@
 ### 2. Signal Mixer
 - Sample At Different Frequncies, Showcasing The Difference Between Complete Reconstruction & Aliasing In Real Time
 
-![alt text](screenshots/sampling.gif)
+![Sampling GIF](screenshots/sampling.gif)
 &nbsp;
 - Add A Sinusoidal Signal Of Custom Amplitude, Frequency & Phase
 
-![alt text](screenshots/add.gif)
+![Adding Component GIF](screenshots/add.gif)
 &nbsp;
 - Remove A Sinusoidal Signal From The Combined Signal
    
-![alt text](screenshots/remove.gif)
+![Removing Component GIF](screenshots/remove.gif)
 ### 3. Noise Addition
 - Add Noise To The Combined Signal Using Controllable SNR Slider
    
-![alt text](screenshots/noise.gif)
+![Adding Noise GIF](screenshots/noise.gif)
 ### 4. Different Reconstruction Methods
 - Reconstruct The Signal Using Different Methods
    
-![alt text](screenshots/rectangular.gif)
+![Rectangular Interpolation GIF](screenshots/rectangular.gif)
 ### 5. Testing Scenarios
 - Generate Premade Test Scenarios Having Different Combined Signals
    
-![alt text](screenshots/scenarios.gif)
+![Scenarios GIF](screenshots/scenarios.gif)
 
 
 ## Installation
